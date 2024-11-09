@@ -34,6 +34,7 @@ const routes = [
     submenu: [
       { title: "Job Posting", href: "/talent/acquisition/posting" },
       { title: "Application Form", href: "/talent/acquisition/apply" },
+      { title: "Proformat List", href: "/talent/acquisition/proformat" },
     ],
   },
   {

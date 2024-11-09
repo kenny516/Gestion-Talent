@@ -1,5 +1,6 @@
-"use client"
+'use client'
 
+import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import {
   Table,
@@ -29,12 +30,42 @@ const candidates = [
     totalScore: 38,
     status: "selected",
   },
+  {
+    id: 3,
+    name: "Alice Johnson",
+    position: "UX Designer",
+    totalScore: 28,
+    status: "pending",
+  },
   // Add more mock candidates as needed
 ]
 
 export function CandidateList() {
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+
+  // Sort candidates based on the selected order
+  const sortedCandidates = [...candidates].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.totalScore - b.totalScore
+    } else {
+      return b.totalScore - a.totalScore
+    }
+  })
+
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))
+  }
+
   return (
     <Card className="p-6">
+      {/* Sort button */}
+      <div className="mb-4">
+        <Button onClick={toggleSortOrder}>
+          Sort by Score ({sortOrder === 'asc' ? 'Ascending' : 'Descending'})
+        </Button>
+      </div>
+
+      {/* Table to display sorted candidates */}
       <Table>
         <TableHeader>
           <TableRow>
@@ -46,7 +77,7 @@ export function CandidateList() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {candidates.map((candidate) => (
+          {sortedCandidates.map((candidate) => (
             <TableRow key={candidate.id}>
               <TableCell>{candidate.name}</TableCell>
               <TableCell>{candidate.position}</TableCell>
