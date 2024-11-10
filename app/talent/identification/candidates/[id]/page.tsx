@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Candidat } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -30,10 +29,25 @@ export default async function CandidateDetailsPage({
 }: {
   params: { id: string };
 }) {
-  const candidate = await getCandidate(params.id);
+  // Fetch candidate data
+  let candidate = await getCandidate(params.id);
 
+  // Set default values if the candidate is not found
   if (!candidate) {
-    notFound();
+    candidate = {
+      id: 0,
+      nom: "Non trouvé",
+      prenom: "Inconnu",
+      email: "non.trouve@email.com",
+      telephone: "0000000000",
+      date_candidature: "Non spécifié",
+      poste: {
+        id: 0,
+        titre: "Non spécifié",
+        description: "Aucune description disponible.",
+        departement: "Non spécifié",
+      },
+    };
   }
 
   return (

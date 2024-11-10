@@ -25,6 +25,7 @@ const routes = [
     submenu: [
       { title: "Profile Requirements", href: "/talent/identification/requirements" },
       { title: "Internal Search", href: "/talent/identification/search" },
+      { title: "candidat", href: "/talent/identification/candidates" },
     ],
   },
   {
