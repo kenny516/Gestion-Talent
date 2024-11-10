@@ -1,71 +1,124 @@
+"use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Candidat, Employe } from "@/types";
+import { useEffect, useState } from "react";
 
-export default async function EmployeesPage() {
-  // TODO: Fetch employees from API
-  const employees = [
+// Function to fetch employees from the API
+const fetchemployees = async (): Promise<Candidat[]> => {
+  try {
+    const response = await fetch("/api/employees"); // Adjust this URL to your actual API endpoint
+    if (!response.ok) {
+      throw new Error("Failed to fetch employees");
+    }
+    const data: Candidat[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return []; // Return an empty array if there's an error
+  }
+};
+
+export default function EmployeesPage() {
+  // State to store employees
+  const [employees, setemployees] = useState<Candidat[]>([]);
+  const employess :Employe[] = [
     {
       id: 1,
-      nom: "Smith",
-      prenom: "Jane",
-      email: "jane@example.com",
-      telephone: "+261 34 00 000 00",
-      date_embauche: "2023-01-15",
-      poste_id: 1,
-      competences: [
-        { id: 1, nom: "React", description: "Frontend Development", niveau: 5 },
-        { id: 2, nom: "Node.js", description: "Backend Development", niveau: 4 }
-      ]
+      nom: "Dupont",
+      prenom: "Jean",
+      email: "jean.dupont@email.com",
+      telephone: "0123456789",
+      date_embauche: "2024-03-20",
+      poste: {
+          id: 1,
+          titre: "Développeur Fullstack",
+          description:
+              "Développ des applications web et mobiles en utilisant des technologies modernes et évolutives.",
+          departement: "Développement"
+      }
+    },
+    {
+      id: 2,
+      nom: "Martin",
+      prenom: "Sophie",
+      email: "sophie.martin@email.com",
+      telephone: "0987654321",
+      date_embauche: "2024-03-19",
+      poste: {
+          id: 1,
+          titre: "Développeur Fullstack",
+          description:
+              "Développ des applications web et mobiles en utilisant des technologies modernes et évolutives.",
+          departement: "Développement"
+      }
     }
   ];
 
+  // Fetch employees when the component mounts
+  useEffect(() => {
+    const getemployees = async () => {
+      const data = await fetchemployees();
+      setemployees(data); // Set the employees data in the state
+    };
+    getemployees(); // Call the function to fetch data
+  }, []);
+
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-4xl font-bold mb-8">Liste des Employés</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {employees.map((employee) => (
-          <Link href={`/employees/${employee.id}`} key={employee.id}>
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarFallback>
-                    {employee.prenom[0]}{employee.nom[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <CardTitle>{`${employee.prenom} ${employee.nom}`}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{employee.email}</p>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <p className="text-sm mb-2">
-                      <span className="font-medium">Date d&apos;embauche:</span>{" "}
-                      {new Date(employee.date_embauche).toLocaleDateString()}
-                    </p>
-                    <Badge variant="secondary" className="w-fit">
-                      Poste #{employee.poste_id}
-                    </Badge>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium mb-2">Compétences:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {employee.competences.map((skill) => (
-                        <Badge key={skill.id} variant="outline">
-                          {skill.nom} ({skill.niveau}/5)
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+    <div className="container mx-auto py-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Liste des Candidats</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nom</TableHead>
+                <TableHead>Prénom</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Téléphone</TableHead>
+                <TableHead>Date de candidature</TableHead>
+                <TableHead>Poste</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {employess.map((employe) => (
+                <TableRow key={employe.id}>
+                  <TableCell>{employe.nom}</TableCell>
+                  <TableCell>{employe.prenom}</TableCell>
+                  <TableCell>{employe.email}</TableCell>
+                  <TableCell>{employe.telephone}</TableCell>
+                  <TableCell>{employe.date_embauche}</TableCell>
+                  <TableCell>{employe.poste.departement}</TableCell>
+                  <TableCell>
+                    <Link href={`employees/${employe.id}`}>
+                      <Button variant="outline" size="sm">
+                        Voir détails
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+      <Link href={`/talent/identification/employees/new`}>
+        <Button variant="default" size="sm">
+          new candidat
+        </Button>
+      </Link>
     </div>
   );
 }

@@ -35,7 +35,7 @@ export type Employe = {
   email: string;
   telephone?: string;
   date_embauche: string;
-  poste_id: number;
+  poste: Poste;
 };
 
 export type PostEmploye = {
