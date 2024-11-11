@@ -4,14 +4,14 @@ import { CandidateForm } from "@/components/candidates/candidate-form";
 export default function NewCandidatePage() {
   return (
     <div className="container mx-auto py-10">
-      <Card>
+        <Card>
         <CardHeader>
           <CardTitle>Nouvelle Candidature</CardTitle>
         </CardHeader>
         <CardContent>
           <CandidateForm />
         </CardContent>
-      </Card>
+        </Card>
     </div>
   );
 }

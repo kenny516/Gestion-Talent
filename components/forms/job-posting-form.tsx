@@ -8,7 +8,6 @@ import { Card } from "@/components/ui/card"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -65,9 +64,9 @@ export function JobPostingForm() {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 flex flex-col justify-center items-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-6 w-1/3">
           <FormField
             control={form.control}
             name="title"
@@ -81,7 +80,6 @@ export function JobPostingForm() {
               </FormItem>
             )}
           />
-          
           <FormField
             control={form.control}
             name="location"
@@ -95,7 +93,6 @@ export function JobPostingForm() {
               </FormItem>
             )}
           />
-          
           <FormField
             control={form.control}
             name="type"
@@ -119,7 +116,6 @@ export function JobPostingForm() {
               </FormItem>
             )}
           />
-          
           <FormField
             control={form.control}
             name="salary"
@@ -133,7 +129,6 @@ export function JobPostingForm() {
               </FormItem>
             )}
           />
-          
           <FormField
             control={form.control}
             name="requirements"
@@ -151,7 +146,6 @@ export function JobPostingForm() {
               </FormItem>
             )}
           />
-          
           <FormField
             control={form.control}
             name="description"
@@ -169,7 +163,6 @@ export function JobPostingForm() {
               </FormItem>
             )}
           />
-          
           <Button type="submit">Create Job Posting</Button>
         </form>
       </Form>

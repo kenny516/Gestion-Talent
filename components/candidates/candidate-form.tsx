@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Poste } from "@/types";
+import { Card } from "../ui/card";
 
 // Define schema with the new date field
 const candidateSchema = z.object({
@@ -53,10 +54,10 @@ export function CandidateForm() {
   useEffect(() => {
     const fetchPostes = async () => {
       try {
-        const response = await axios.get("/api/postes"); // Replace with your API endpoint
+        const response  = await axios.get("/api/postes"); // Replace with your API endpoint
         setPostes(response.data);
       } catch (error) {
-        toast.error("Erreur lors du chargement des postes");
+        toast.error(error+"Erreur lors du chargement des postes");
       }
     };
     fetchPostes();
@@ -69,13 +70,14 @@ export function CandidateForm() {
       toast.success("Candidature enregistrée avec succès!");
       form.reset();
     } catch (error) {
-      toast.error("Erreur lors de l'enregistrement de la candidature");
+      toast.error(error+"Erreur lors de l'enregistrement de la candidature");
     }
   }
 
   return (
+    <Card className="p-6 flex flex-col justify-center items-center">
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-1/3">
         {/* Nom Field */}
         <FormField
           control={form.control}
@@ -207,10 +209,11 @@ export function CandidateForm() {
         />
 
         {/* Submit Button */}
-        <Button type="submit" className="w-full">
+        <Button type="submit">
           Soumettre la candidature
         </Button>
       </form>
     </Form>
+    </Card>
   );
 }

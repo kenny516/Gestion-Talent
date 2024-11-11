@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header"
 
 export default function EvaluationPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 container mx-auto">
       <PageHeader
         title="Candidate Evaluation"
         description="Evaluate candidate performance and qualifications"

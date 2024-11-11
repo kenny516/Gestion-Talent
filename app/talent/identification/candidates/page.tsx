@@ -12,26 +12,22 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Candidat } from "@/types";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-// Function to fetch candidates from the API
 const fetchCandidates = async (): Promise<Candidat[]> => {
   try {
-    const response = await fetch("/api/candidates"); // Adjust this URL to your actual API endpoint
-    if (!response.ok) {
-      throw new Error("Failed to fetch candidates");
-    }
-    const data: Candidat[] = await response.json();
+    const response = await axios.get("/api/candidates");
+    const data: Candidat[] = await response.data.json();
     return data;
   } catch (error) {
     console.error(error);
-    return []; // Return an empty array if there's an error
+    return [];
   }
 };
 
 export default function CandidatesPage() {
-  // State to store candidates
   const [candidates, setCandidates] = useState<Candidat[]>([]);
-  const cand :Candidat[] = [
+/*  const cand :Candidat[] = [
     {
       id: 1,
       nom: "Dupont",
@@ -62,15 +58,14 @@ export default function CandidatesPage() {
           departement: "Développement"
       }
     }
-  ];
+  ];*/
 
-  // Fetch candidates when the component mounts
   useEffect(() => {
     const getCandidates = async () => {
       const data = await fetchCandidates();
-      setCandidates(data); // Set the candidates data in the state
+      setCandidates(data);
     };
-    getCandidates(); // Call the function to fetch data
+    getCandidates();
   }, []);
 
   return (
@@ -93,7 +88,7 @@ export default function CandidatesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {cand.map((candidate) => (
+              {candidates.map((candidate) => (
                 <TableRow key={candidate.id}>
                   <TableCell>{candidate.nom}</TableCell>
                   <TableCell>{candidate.prenom}</TableCell>
