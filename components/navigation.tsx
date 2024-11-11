@@ -40,6 +40,7 @@ const routes = [
       { title: "Evaluate", href: "/talent/development/evaluate" },
       { title: "Filter", href: "/talent/development/filter" },
       { title: "Contract", href: "/talent/development/contract" },
+      { title: "note", href: "/talent/development/note" },
     ],
   },
 ];

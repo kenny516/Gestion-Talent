@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -12,7 +13,6 @@ import Link from "next/link";
 import { api_url, Employe } from "@/types";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
-import { useRouter } from "next/router";
 
 // Function to fetch employees from the API
 const fetchEmployees = async (): Promise<Employe[]> => {
@@ -32,7 +32,6 @@ const fetchEmployees = async (): Promise<Employe[]> => {
 export default function EmployeesPage() {
   // State to store employees
   const [employees, setEmployees] = useState<Employe[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     const getEmployees = async () => {
@@ -43,7 +42,7 @@ export default function EmployeesPage() {
   }, []);
 
   const handleEditEmployee = (employeeId: number) => {
-    router.push(`/talent/identification/employees/${employeeId}/edit`);
+//
   };
 
   const handleDeleteEmployee = async (employeeId: number) => {
