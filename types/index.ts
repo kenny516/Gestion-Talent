@@ -37,8 +37,9 @@ export type Employe = {
     prenom: string;
     email: string;
     telephone?: string;
-    date_embauche?: string;
+    dateCandidature?: string;
     poste: Poste;
+    competence?:Competence[];
 };
 
 export type PostEmploye = {

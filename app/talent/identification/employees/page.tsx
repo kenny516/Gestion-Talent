@@ -1,4 +1,3 @@
-"use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -10,17 +9,19 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Candidat, Employe } from "@/types";
+import { api_url, Employe } from "@/types";
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/page-header";
+import { useRouter } from "next/router";
 
 // Function to fetch employees from the API
-const fetchemployees = async (): Promise<Candidat[]> => {
+const fetchEmployees = async (): Promise<Employe[]> => {
   try {
-    const response = await fetch("/api/employees"); // Adjust this URL to your actual API endpoint
+    const response = await fetch(api_url + "employees"); // Adjust this URL to your actual API endpoint
     if (!response.ok) {
       throw new Error("Failed to fetch employees");
     }
-    const data: Candidat[] = await response.json();
+    const data: Employe[] = await response.json();
     return data;
   } catch (error) {
     console.error(error);
@@ -30,54 +31,46 @@ const fetchemployees = async (): Promise<Candidat[]> => {
 
 export default function EmployeesPage() {
   // State to store employees
-  const [employees, setemployees] = useState<Candidat[]>([]);
-  const employess :Employe[] = [
-    {
-      id: 1,
-      nom: "Dupont",
-      prenom: "Jean",
-      email: "jean.dupont@email.com",
-      telephone: "0123456789",
-      date_embauche: "2024-03-20",
-      poste: {
-          id: 1,
-          titre: "Développeur Fullstack",
-          description:
-              "Développ des applications web et mobiles en utilisant des technologies modernes et évolutives.",
-          departement: "Développement"
-      }
-    },
-    {
-      id: 2,
-      nom: "Martin",
-      prenom: "Sophie",
-      email: "sophie.martin@email.com",
-      telephone: "0987654321",
-      date_embauche: "2024-03-19",
-      poste: {
-          id: 1,
-          titre: "Développeur Fullstack",
-          description:
-              "Développ des applications web et mobiles en utilisant des technologies modernes et évolutives.",
-          departement: "Développement"
-      }
-    }
-  ];
+  const [employees, setEmployees] = useState<Employe[]>([]);
+  const router = useRouter();
 
-  // Fetch employees when the component mounts
   useEffect(() => {
-    const getemployees = async () => {
-      const data = await fetchemployees();
-      setemployees(data); // Set the employees data in the state
+    const getEmployees = async () => {
+      const data = await fetchEmployees();
+      setEmployees(data);
     };
-    getemployees(); // Call the function to fetch data
+    getEmployees();
   }, []);
 
+  const handleEditEmployee = (employeeId: number) => {
+    router.push(`/talent/identification/employees/${employeeId}/edit`);
+  };
+
+  const handleDeleteEmployee = async (employeeId: number) => {
+    try {
+      await fetch(`${api_url}employees/${employeeId}`, {
+        method: 'DELETE',
+      });
+      setEmployees(employees.filter((emp) => emp.id !== employeeId));
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+    }
+  };
+
   return (
-    <div className="container mx-auto py-8">
+    <div className="space-y-6">
+      <PageHeader
+        title="Liste des employés"
+        description="Liste des employés avec leurs compétences et informations de poste"
+      />
       <Card>
-        <CardHeader>
-          <CardTitle>Liste des Candidats</CardTitle>
+        <CardHeader className="flex gap-5">
+          <CardTitle>Liste des Employés</CardTitle>
+          <Link href={`/talent/identification/employees/new`}>
+            <Button variant="default" size="sm">
+              Nouvel employé
+            </Button>
+          </Link>
         </CardHeader>
         <CardContent>
           <Table>
@@ -89,24 +82,48 @@ export default function EmployeesPage() {
                 <TableHead>Téléphone</TableHead>
                 <TableHead>Date de candidature</TableHead>
                 <TableHead>Poste</TableHead>
+                <TableHead>Compétences</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {employess.map((employe) => (
+              {employees.map((employe) => (
                 <TableRow key={employe.id}>
                   <TableCell>{employe.nom}</TableCell>
                   <TableCell>{employe.prenom}</TableCell>
                   <TableCell>{employe.email}</TableCell>
-                  <TableCell>{employe.telephone}</TableCell>
-                  <TableCell>{employe.date_embauche}</TableCell>
-                  <TableCell>{employe.poste.departement}</TableCell>
+                  <TableCell>{employe.telephone || "N/A"}</TableCell>
+                  <TableCell>{employe.dateCandidature || "N/A"}</TableCell>
+                  <TableCell>{employe.poste?.departement || "N/A"}</TableCell>
                   <TableCell>
-                    <Link href={`employees/${employe.id}`}>
-                      <Button variant="outline" size="sm">
-                        Voir détails
+                    {employe.competence && employe.competence.length > 0
+                      ? employe.competence.map((comp) => (
+                          <div key={comp.id}>{comp.nom}</div>
+                        ))
+                      : "Aucune compétence"}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Link href={`employees/${employe.id}`}>
+                        <Button variant="outline" size="sm">
+                          Voir détails
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditEmployee(employe.id)}
+                      >
+                        Modifier
                       </Button>
-                    </Link>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteEmployee(employe.id)}
+                      >
+                        Supprimer
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -114,11 +131,6 @@ export default function EmployeesPage() {
           </Table>
         </CardContent>
       </Card>
-      <Link href={`/talent/identification/employees/new`}>
-        <Button variant="default" size="sm">
-          new candidat
-        </Button>
-      </Link>
     </div>
   );
 }
