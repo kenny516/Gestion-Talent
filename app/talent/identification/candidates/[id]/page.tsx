@@ -40,7 +40,7 @@ export default async function CandidateDetailsPage({
       prenom: "Inconnu",
       email: "non.trouve@email.com",
       telephone: "0000000000",
-      date_candidature: "Non spécifié",
+      date_candidature: new Date(),
       poste: {
         id: 0,
         titre: "Non spécifié",

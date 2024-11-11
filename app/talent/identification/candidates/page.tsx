@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Candidat } from "@/types";
+import { api_url, Candidat } from "@/types";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const fetchCandidates = async (): Promise<Candidat[]> => {
   try {
-    const response = await axios.get("/api/candidates");
-    const data: Candidat[] = await response.data.json();
+    const response = await axios.get(api_url + "candidat");
+    const data: Candidat[] = await response.data;
     return data;
   } catch (error) {
     console.error(error);
@@ -27,38 +27,6 @@ const fetchCandidates = async (): Promise<Candidat[]> => {
 
 export default function CandidatesPage() {
   const [candidates, setCandidates] = useState<Candidat[]>([]);
-/*  const cand :Candidat[] = [
-    {
-      id: 1,
-      nom: "Dupont",
-      prenom: "Jean",
-      email: "jean.dupont@email.com",
-      telephone: "0123456789",
-      date_candidature: "2024-03-20",
-      poste: {
-          id: 1,
-          titre: "Développeur Fullstack",
-          description:
-              "Développ des applications web et mobiles en utilisant des technologies modernes et évolutives.",
-          departement: "Développement"
-      }
-    },
-    {
-      id: 2,
-      nom: "Martin",
-      prenom: "Sophie",
-      email: "sophie.martin@email.com",
-      telephone: "0987654321",
-      date_candidature: "2024-03-19",
-      poste: {
-          id: 1,
-          titre: "Développeur Fullstack",
-          description:
-              "Développ des applications web et mobiles en utilisant des technologies modernes et évolutives.",
-          departement: "Développement"
-      }
-    }
-  ];*/
 
   useEffect(() => {
     const getCandidates = async () => {
@@ -71,8 +39,13 @@ export default function CandidatesPage() {
   return (
     <div className="container mx-auto py-8">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex gap-5">
           <CardTitle>Liste des Candidats</CardTitle>
+          <Link href={`/talent/identification/candidates/new`}>
+            <Button variant="default" size="sm">
+              new candidat
+            </Button>
+          </Link>
         </CardHeader>
         <CardContent>
           <Table>
@@ -94,7 +67,7 @@ export default function CandidatesPage() {
                   <TableCell>{candidate.prenom}</TableCell>
                   <TableCell>{candidate.email}</TableCell>
                   <TableCell>{candidate.telephone}</TableCell>
-                  <TableCell>{candidate.date_candidature}</TableCell>
+                  <TableCell>{candidate.dateCandidature}</TableCell>
                   <TableCell>{candidate.poste.departement}</TableCell>
                   <TableCell>
                     <Link href={`candidates/${candidate.id}`}>
@@ -109,11 +82,6 @@ export default function CandidatesPage() {
           </Table>
         </CardContent>
       </Card>
-      <Link href={`/talent/identification/candidates/new`}>
-        <Button variant="default" size="sm">
-          new candidat
-        </Button>
-      </Link>
     </div>
   );
 }
