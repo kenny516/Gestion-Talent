@@ -1,0 +1,11 @@
+{
+  "nom": "Chan",
+  "prenom": "kenny",
+  "email": "kennyandriantsirafychan@gmail.com",
+  "telephone": "+261340565798",
+  "poste_id": 1,
+  "dateCandidature": "2024-11-11T17:15:07.254Z",
+  "competences": [{ "id": 1, "niveau": 5 }]
+}
+
+

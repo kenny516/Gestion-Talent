@@ -5,8 +5,8 @@ export default function JobPostingPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Create Job Posting"
-        description="Create a new job posting based on profile requirements"
+        title="Creation de poste"
+        description="Cree un nouveau poste"
       />
       <JobPostingForm />
     </div>

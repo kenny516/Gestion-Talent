@@ -1,21 +1,12 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Users,
-  UserPlus,
-  GraduationCap,
-  Menu,
-} from "lucide-react"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { useState } from "react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Users, UserPlus, GraduationCap, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
 
 const routes = [
   {
@@ -23,9 +14,12 @@ const routes = [
     href: "/talent/identification",
     icon: Users,
     submenu: [
-      { title: "Profile Requirements", href: "/talent/identification/requirements" },
+      {
+        title: "Profile Requirements",
+        href: "/talent/identification/requirements",
+      },
       { title: "Internal Search", href: "/talent/identification/search" },
-      { title: "candidat", href: "/talent/identification/candidates" },
+      { title: "candidat", href: "/talent/identification/candidats" },
     ],
   },
   {
@@ -35,7 +29,7 @@ const routes = [
     submenu: [
       { title: "Job Posting", href: "/talent/acquisition/posting" },
       { title: "Application Form", href: "/talent/acquisition/apply" },
-      { title: "Proformat List", href: "/talent/acquisition/proformat" },
+      { title: "Offre Embauche", href: "/talent/acquisition/offreEmbauche" },
     ],
   },
   {
@@ -48,11 +42,11 @@ const routes = [
       { title: "Contract", href: "/talent/development/contract" },
     ],
   },
-]
+];
 
 export function Navigation() {
-  const pathname = usePathname()
-  const [open, setOpen] = useState(false)
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
     <nav className="border-b">
@@ -148,5 +142,5 @@ export function Navigation() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

@@ -5,8 +5,8 @@ export const api_url = "http://localhost:8080/gestion_talent/api/";// export typ
 export type Poste = {
     id: number;
     titre: string;
-    description?: string;
-    departement?: string;
+    description: string;
+    departement: string;
 };
 
 export type Candidat = {
@@ -38,7 +38,7 @@ export type Employe = {
     email: string;
     telephone?: string;
     date_embauche?: string;
-    poste?: Poste;
+    poste: Poste;
 };
 
 export type PostEmploye = {

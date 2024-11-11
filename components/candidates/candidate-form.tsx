@@ -20,12 +20,10 @@ import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api_url, Candidat, Competence, Poste } from "@/types";
+import { api_url, Competence, Poste } from "@/types";
 import { Card } from "../ui/card";
 import { Slider } from "../ui/slider";
 
-// Define schema with the new date field
-// Define schema with the new date field
 const candidateSchema = z.object({
   nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
@@ -62,7 +60,7 @@ export function CandidateForm() {
   useEffect(() => {
     const fetchPostes = async () => {
       try {
-        const response = await axios.get(api_url + "postes");
+        const response = await axios.get(api_url + "poste");
         setPostes(response.data);
       } catch (error) {
         toast.error(error + "Erreur lors du chargement des postes");
@@ -93,6 +91,7 @@ export function CandidateForm() {
 
   async function onSubmit(values: z.infer<typeof candidateSchema>) {
     try {
+      console.log(JSON.stringify(values));
       await axios.post("/api/candidates", values);
       toast.success("Candidature enregistrée avec succès!");
       form.reset();
@@ -249,8 +248,8 @@ export function CandidateForm() {
                   <FormControl>
                     <Slider
                       min={0}
-                      max={10}
-                      step={1}
+                      max={5}
+                      step={0.5}
                       value={[field.value]}
                       onValueChange={(vals) => field.onChange(vals[0])}
                     />

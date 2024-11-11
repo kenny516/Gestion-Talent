@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Candidat } from "@/types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { PageHeader } from "@/components/page-header";
 
 // Function to fetch candidate details by ID from the API
 const getCandidate = async (id: string): Promise<Candidat | null> => {
@@ -40,7 +41,7 @@ export default async function CandidateDetailsPage({
       prenom: "Inconnu",
       email: "non.trouve@email.com",
       telephone: "0000000000",
-      date_candidature: new Date(),
+      dateCandidature: "00000000",
       poste: {
         id: 0,
         titre: "Non spécifié",
@@ -51,10 +52,19 @@ export default async function CandidateDetailsPage({
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="space-y-6">
+      <PageHeader
+        title="Détails du Candidat"
+        description="Details concernant le candidat"
+      />
       <Card>
-        <CardHeader>
+        <CardHeader className="flex gap-5">
           <CardTitle>Détails du Candidat</CardTitle>
+          <Link href={`/talent/identification/candidats`}>
+            <Button variant="default" size="sm">
+              retour
+            </Button>
+          </Link>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
@@ -103,11 +113,6 @@ export default async function CandidateDetailsPage({
           </div>
         </CardContent>
       </Card>
-      <Link href={`/talent/identification/candidates`}>
-        <Button variant="outline" size="sm">
-          retour
-        </Button>
-      </Link>
     </div>
   );
 }
