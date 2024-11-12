@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,31 +9,67 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { api_url } from "@/types";
 import { z } from "zod";
+import { PageHeader } from "@/components/page-header";
 
-// Define Zod schema for validation
 const positionSchema = z.object({
   titre: z.string().min(1, { message: "Le titre est requis" }),
   description: z.string().optional(),
   departement: z.string().min(1, { message: "Le département est requis" }),
-  competences_id:z.array().min(1, { message: "" }),
+  competences_id: z
+    .array(z.number())
+    .min(1, { message: "Sélectionnez au moins une compétence" }),
 });
 
-// Define type based on the Zod schema
 type PositionFormData = z.infer<typeof positionSchema>;
+
+type Competence = {
+  id: number;
+  name: string;
+};
 
 const CreatePosition = () => {
   const [formData, setFormData] = useState<PositionFormData>({
     titre: "",
     description: "",
     departement: "",
+    competences_id: [],
   });
+  const [competences, setCompetences] = useState<Competence[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  useEffect(() => {
+    const fetchCompetences = async () => {
+      try {
+        const response = await axios.get(`${api_url}competences`);
+        setCompetences(response.data);
+      } catch (err) {
+        console.error("Erreur lors du chargement des compétences", err);
+      }
+    };
+
+    fetchCompetences();
+  }, []);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setValidationErrors({}); // Clear validation errors on change
+    setValidationErrors({});
+  };
+
+  const handleCompetenceChange = (id: number) => {
+    setFormData((prevFormData) => {
+      const isSelected = prevFormData.competences_id.includes(id);
+      const updatedCompetences = isSelected
+        ? prevFormData.competences_id.filter((compId) => compId !== id)
+        : [...prevFormData.competences_id, id];
+
+      return { ...prevFormData, competences_id: updatedCompetences };
+    });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -41,7 +77,6 @@ const CreatePosition = () => {
     setLoading(true);
     setError(null);
 
-    // Validate form data with Zod
     const result = positionSchema.safeParse(formData);
     if (!result.success) {
       const errors = result.error.errors.reduce((acc, curr) => {
@@ -56,7 +91,12 @@ const CreatePosition = () => {
     try {
       await axios.post(api_url + "poste", formData);
       alert("Position created successfully!");
-      setFormData({ titre: "", description: "", departement: "" });
+      setFormData({
+        titre: "",
+        description: "",
+        departement: "",
+        competences_id: [],
+      });
     } catch (err) {
       setError("Erreur lors de la création du poste");
       console.error(err);
@@ -66,7 +106,11 @@ const CreatePosition = () => {
   };
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="space-y-6">
+      <PageHeader
+        title="Creation de poste"
+        description="Cree un nouveau poste"
+      />
       <Card>
         <CardHeader>
           <CardTitle>Créer un nouveau poste</CardTitle>
@@ -74,7 +118,10 @@ const CreatePosition = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="titre" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="titre"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Titre
               </label>
               <Input
@@ -90,7 +137,10 @@ const CreatePosition = () => {
               )}
             </div>
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Description
               </label>
               <Textarea
@@ -105,7 +155,10 @@ const CreatePosition = () => {
               )}
             </div>
             <div>
-              <label htmlFor="departement" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="departement"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Département
               </label>
               <Input
@@ -120,9 +173,41 @@ const CreatePosition = () => {
                 <p className="text-red-500">{validationErrors.departement}</p>
               )}
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Compétences
+              </label>
+              <div className="space-y-2">
+                {competences.map((competence) => (
+                  <div key={competence.id} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`competence-${competence.id}`}
+                      checked={formData.competences_id.includes(competence.id)}
+                      onChange={() => handleCompetenceChange(competence.id)}
+                    />
+                    <label
+                      htmlFor={`competence-${competence.id}`}
+                      className="ml-2"
+                    >
+                      {competence.name}
+                    </label>
+                  </div>
+                ))}
+                {validationErrors.competences_id && (
+                  <p className="text-red-500">
+                    {validationErrors.competences_id}
+                  </p>
+                )}
+              </div>
+            </div>
             {error && <p className="text-red-500">{error}</p>}
             <Button type="submit" disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Créer le poste"}
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Créer le poste"
+              )}
             </Button>
           </form>
         </CardContent>

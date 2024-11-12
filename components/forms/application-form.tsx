@@ -57,9 +57,9 @@ export function ApplicationForm() {
   }
 
   return (
-    <Card className="p-6 flex flex-col justify-center items-center">
+    <Card className="p-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-1/3 ">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
             name="fullName"

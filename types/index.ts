@@ -1,6 +1,5 @@
 // export types for individual tables
 
-import exp from "constants";
 
 export const api_url = "http://localhost:8080/gestion_talent/api/";// export types for each table in the database
 // Types for each table in the database
