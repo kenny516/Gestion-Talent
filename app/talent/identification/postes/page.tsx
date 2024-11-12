@@ -1,77 +1,84 @@
 "use client";
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
-import { Poste } from '@/types';
 
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import axios from "axios";
+import { api_url, Poste } from "@/types";
+import { PageHeader } from "@/components/page-header";
 
-const PosteList = () => {
-  const [postes, setpostes] = useState<Poste[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function PostesPage() {
+  const [postes, setPostes] = useState<Poste[]>([]);
+
+  // Fetch postes from the API
+  const fetchPostes = async () => {
+    try {
+      const response = await axios.get(api_url + "poste"); // Adjust this URL to your actual API endpoint
+      setPostes(response.data);
+    } catch (error) {
+      console.error("Error fetching postes:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchpostes = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get<Poste[]>('/api/postes');
-        setpostes(response.data);
-        setError(null);
-      } catch (err) {
-        setError("Erreur lors du chargement des postes");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchpostes();
+    fetchPostes();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-red-500 p-4">
-        {error}
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Postes disponibles</h1>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {postes.map(poste => (
-          <Card key={poste.id} className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-2">{poste.titre}</h2>
-              <p className="text-sm text-muted-foreground mb-4">
-                {poste.departement}
-              </p>
-              {poste.description && (
-                <p className="text-sm line-clamp-3">
-                  {poste.description}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      {postes.length === 0 && (
-        <p className="text-center text-muted-foreground">
-          Aucun poste disponible pour le moment
-        </p>
-      )}
+    <div className="space-y-6">
+      <PageHeader
+        title="Liste des Postes"
+        description="Affiche la liste des postes disponibles dans l'entreprise."
+      />
+
+      <Card>
+        <CardHeader className="flex gap-5">
+          <CardTitle>Liste des Postes</CardTitle>
+          <Link href={`/talent/identification/postes/new`}>
+            <Button variant="default" size="sm">
+              Nouveau Poste
+            </Button>
+          </Link>
+        </CardHeader>
+
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Titre</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Département</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {postes.map((poste) => (
+                <TableRow key={poste.id}>
+                  <TableCell>{poste.titre}</TableCell>
+                  <TableCell>{poste.description}</TableCell>
+                  <TableCell>{poste.departement}</TableCell>
+                  <TableCell>
+                    <Link href={`postes/${poste.id}`}>
+                      <Button variant="outline" size="sm">
+                        Voir détails
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default PosteList;
+}

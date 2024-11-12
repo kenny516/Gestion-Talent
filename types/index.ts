@@ -1,5 +1,7 @@
 // export types for individual tables
 
+import exp from "constants";
+
 export const api_url = "http://localhost:8080/gestion_talent/api/";// export types for each table in the database
 // Types for each table in the database
 export type Poste = {
@@ -37,9 +39,9 @@ export type Employe = {
     prenom: string;
     email: string;
     telephone?: string;
-    dateCandidature?: string;
+    dateEmbauche?: string;
     poste: Poste;
-    competence?:Competence[];
+    competences?:Competence[];
 };
 
 export type PostEmploye = {
@@ -91,6 +93,10 @@ export type CompetencesCandidats = {
 export type CandidaturData={
     candidat:Candidat;
     competence: CompetencesCandidats[];
+}
+export type PosteCompetenceData={
+    poste:Poste;
+    competence: CompetencesEmployes[];
 }
 
 

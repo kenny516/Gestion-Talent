@@ -20,6 +20,8 @@ const routes = [
       },
       { title: "Internal Search", href: "/talent/identification/search" },
       { title: "candidat", href: "/talent/identification/candidats" },
+      { title: "employe", href: "/talent/identification/employees" },
+      { title: "poste", href: "/talent/identification/postes" },
     ],
   },
   {

@@ -30,7 +30,7 @@ const candidateSchema = z.object({
   email: z.string().email("Email invalide"),
   telephone: z.string().min(8, "Numéro de téléphone invalide"),
   poste_id: z.number().positive("Veuillez sélectionner un poste"),
-  dateCandidature: z.date().refine((val) => !isNaN(val.getTime()), {
+  candidaturTime: z.date().refine((val) => !isNaN(val.getTime()), {
     message: "La date est invalide",
   }),
   competences: z.array(
@@ -52,7 +52,7 @@ export function CandidateForm() {
       email: "",
       telephone: "",
       poste_id: 0,
-      dateCandidature: new Date(),
+      candidaturTime: new Date(),
       competences: [],
     },
   });
@@ -91,8 +91,13 @@ export function CandidateForm() {
 
   async function onSubmit(values: z.infer<typeof candidateSchema>) {
     try {
-      console.log(JSON.stringify(values));
-      await axios.post("/api/candidates", values);
+      console.log("Données envoyées :", JSON.stringify(values, null, 2));
+      // Envoi de la requête POST avec les valeurs
+      await axios.post(api_url + "candidat", values, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       toast.success("Candidature enregistrée avec succès!");
       form.reset();
     } catch (error) {
@@ -200,7 +205,7 @@ export function CandidateForm() {
           {/* Date de Candidature Field */}
           <FormField
             control={form.control}
-            name="dateCandidature"
+            name="candidaturTime"
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Start Date</FormLabel>

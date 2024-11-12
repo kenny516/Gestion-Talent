@@ -17,7 +17,7 @@ import { PageHeader } from "@/components/page-header";
 // Function to fetch employees from the API
 const fetchEmployees = async (): Promise<Employe[]> => {
   try {
-    const response = await fetch(api_url + "employees"); // Adjust this URL to your actual API endpoint
+    const response = await fetch(api_url + "employe"); // Adjust this URL to your actual API endpoint
     if (!response.ok) {
       throw new Error("Failed to fetch employees");
     }
@@ -41,20 +41,6 @@ export default function EmployeesPage() {
     getEmployees();
   }, []);
 
-  const handleEditEmployee = (employeeId: number) => {
-//
-  };
-
-  const handleDeleteEmployee = async (employeeId: number) => {
-    try {
-      await fetch(`${api_url}employees/${employeeId}`, {
-        method: 'DELETE',
-      });
-      setEmployees(employees.filter((emp) => emp.id !== employeeId));
-    } catch (error) {
-      console.error('Error deleting employee:', error);
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -92,11 +78,11 @@ export default function EmployeesPage() {
                   <TableCell>{employe.prenom}</TableCell>
                   <TableCell>{employe.email}</TableCell>
                   <TableCell>{employe.telephone || "N/A"}</TableCell>
-                  <TableCell>{employe.dateCandidature || "N/A"}</TableCell>
+                  <TableCell>{employe.dateEmbauche || "N/A"}</TableCell>
                   <TableCell>{employe.poste?.departement || "N/A"}</TableCell>
                   <TableCell>
-                    {employe.competence && employe.competence.length > 0
-                      ? employe.competence.map((comp) => (
+                    {employe.competences && employe.competences.length > 0
+                      ? employe.competences.map((comp) => (
                           <div key={comp.id}>{comp.nom}</div>
                         ))
                       : "Aucune compétence"}
@@ -108,20 +94,6 @@ export default function EmployeesPage() {
                           Voir détails
                         </Button>
                       </Link>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditEmployee(employe.id)}
-                      >
-                        Modifier
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteEmployee(employe.id)}
-                      >
-                        Supprimer
-                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
