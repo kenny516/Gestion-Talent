@@ -43,7 +43,7 @@ export default function PostesPage() {
       <Card>
         <CardHeader className="flex gap-5">
           <CardTitle>Liste des Postes</CardTitle>
-          <Link href={`/talent/identification/postes/new`}>
+          <Link href={`/back-office/talent/identification/postes/new`}>
             <Button variant="default" size="sm">
               Nouveau Poste
             </Button>
@@ -67,7 +67,7 @@ export default function PostesPage() {
                   <TableCell>{poste.description}</TableCell>
                   <TableCell>{poste.departement}</TableCell>
                   <TableCell>
-                    <Link href={`postes/${poste.id}`}>
+                    <Link href={`/back-office/postes/${poste.id}`}>
                       <Button variant="outline" size="sm">
                         Voir détails
                       </Button>

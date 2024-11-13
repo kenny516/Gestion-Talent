@@ -7,8 +7,9 @@ import {
   Frame,
   Map,
   PieChart,
+  Save,
   Settings2,
-  SquareTerminal,
+  User,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -33,58 +34,35 @@ const data = {
   navMain: [
     {
       title: "Humain",
-      url: "/talent/identification",
-      icon: SquareTerminal,
+      url: "/back-office/talent/identification",
+      icon: User,
       isActive: true,
       items: [
-        { title: "Internal Search", url: "/talent/identification/search" },
-        { title: "candidat", url: "/talent/identification/candidats" },
-        { title: "employe", url: "/talent/identification/employees" },
-        { title: "poste", url: "/talent/identification/postes" },
+        { title: "Internal Search", url: "/back-office/talent/identification/search" },
+        { title: "candidat", url: "/back-office/talent/identification/candidats" },
+        { title: "employe", url: "/back-office/talent/identification/employees" },
+        { title: "poste", url: "/back-office/talent/identification/postes" },
       ],
     },
     {
       title: "Acquisition",
-      url: "/talent/acquisition",
-      icon: Bot,
+      url: "/back-office/talent/acquisition",
+      icon: Save,
       items: [
-        { title: "Job Posting", url: "/talent/acquisition/posting" },
-        { title: "Application Form", url: "/talent/acquisition/apply" },
-        { title: "Offre Embauche", url: "/talent/acquisition/offreEmbauche" },
+        { title: "Job Posting", url: "/back-office/talent/acquisition/posting" },
+        { title: "Application Form", url: "/back-office/talent/acquisition/apply" },
+        { title: "Offre Embauche", url: "/back-office/talent/acquisition/offreEmbauche" },
       ],
     },
     {
       title: "Development",
-      url: "/talent/development",
+      url: "/back-office/talent/development",
       icon: BookOpen,
       items: [
-        { title: "Evaluate", url: "/talent/development/evaluate" },
-        { title: "Filter", url: "/talent/development/filter" },
-        { title: "Contract", url: "/talent/development/contract" },
-        { title: "note", url: "/talent/development/note" },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
+        { title: "Evaluate", url: "/back-office/talent/development/evaluate" },
+        { title: "Filter", url: "/back-office/talent/development/filter" },
+        { title: "Contract", url: "/back-office/talent/development/contract" },
+        { title: "note", url: "/back-office/talent/development/note" },
       ],
     },
   ],

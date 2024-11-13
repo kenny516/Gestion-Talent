@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { api_url } from "@/types";
+import { api_url, Competence } from "@/types";
 import { z } from "zod";
 import { PageHeader } from "@/components/page-header";
 
@@ -21,11 +21,6 @@ const positionSchema = z.object({
 });
 
 type PositionFormData = z.infer<typeof positionSchema>;
-
-type Competence = {
-  id: number;
-  name: string;
-};
 
 const CreatePosition = () => {
   const [formData, setFormData] = useState<PositionFormData>({
@@ -44,7 +39,7 @@ const CreatePosition = () => {
   useEffect(() => {
     const fetchCompetences = async () => {
       try {
-        const response = await axios.get(`${api_url}competences`);
+        const response = await axios.get(`${api_url}competence`);
         setCompetences(response.data);
       } catch (err) {
         console.error("Erreur lors du chargement des compétences", err);
@@ -89,7 +84,9 @@ const CreatePosition = () => {
     }
 
     try {
+      console.log(formData);
       await axios.post(api_url + "poste", formData);
+
       alert("Position created successfully!");
       setFormData({
         titre: "",
@@ -190,7 +187,7 @@ const CreatePosition = () => {
                       htmlFor={`competence-${competence.id}`}
                       className="ml-2"
                     >
-                      {competence.name}
+                      {competence.nom}
                     </label>
                   </div>
                 ))}

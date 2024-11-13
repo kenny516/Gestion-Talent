@@ -61,7 +61,7 @@ export default function CandidatesPage() {
       <Card>
         <CardHeader className="flex gap-5">
           <CardTitle>Liste des Candidats</CardTitle>
-          <Link href="/talent/identification/candidats/new">
+          <Link href="/back-office/talent/identification/candidats/new">
             <Button variant="default" size="sm">
               Nouveau candidat
             </Button>
@@ -100,7 +100,7 @@ export default function CandidatesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Link href={`candidats/${candidate.id}`}>
+                    <Link href={`/back-office/candidats/${candidate.id}`}>
                       <Button variant="outline" size="sm">
                         Voir détails
                       </Button>
