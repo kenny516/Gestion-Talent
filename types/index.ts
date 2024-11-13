@@ -31,6 +31,11 @@ export type NoteCandidat = {
     typeNote: TypeNote;
     note?: number;
 };
+export type NoteCandidatForm = {
+    idCandidat: number;
+    idTypeNote: number;
+    note?: number;
+};
 
 export type Employe = {
     id: number;
