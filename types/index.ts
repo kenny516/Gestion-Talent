@@ -28,7 +28,7 @@ export type TypeNote = {
 
 export type NoteCandidat = {
     idCandidat: number;
-    idTypeNote: number;
+    typeNote: TypeNote;
     note?: number;
 };
 
@@ -75,23 +75,29 @@ export type DetailsPoste = {
     idCompetence: number;
 };
 
-export type CompetencesEmployes = {
+export type CompetencesEmployes =  Competence &{
     employe_id: number;
-    competence_id: number;
     niveau: 1 | 2 | 3 | 4 | 5;
 };
 
-export type CompetencesCandidats = {
+export type  CompetencesCandidats = Competence & {
     candidat_id: number;
-    competence_id: number;
     niveau: 1 | 2 | 3 | 4 | 5;
 };
 
 /// my object
 
 export type CandidaturData={
-    candidat:Candidat;
-    competence: CompetencesCandidats[];
+    id: number;
+    nom: string;
+    prenom: string;
+    email: string;
+    telephone?: string;
+    dateCandidature: string;
+    poste: Poste;
+    status?: 'En attente' | 'Retenu' | 'Refusé';
+    competences: CompetencesCandidats[];
+    notes: NoteCandidat[];
 }
 export type PosteCompetenceData={
     poste:Poste;

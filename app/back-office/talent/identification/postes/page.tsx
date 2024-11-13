@@ -15,15 +15,18 @@ import Link from "next/link";
 import axios from "axios";
 import { api_url, Poste } from "@/types";
 import { PageHeader } from "@/components/page-header";
+import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 
 export default function PostesPage() {
   const [postes, setPostes] = useState<Poste[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch postes from the API
   const fetchPostes = async () => {
     try {
       const response = await axios.get(api_url + "poste"); // Adjust this URL to your actual API endpoint
       setPostes(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching postes:", error);
     }
@@ -39,7 +42,6 @@ export default function PostesPage() {
         title="Liste des Postes"
         description="Affiche la liste des postes disponibles dans l'entreprise."
       />
-
       <Card>
         <CardHeader className="flex gap-5">
           <CardTitle>Liste des Postes</CardTitle>
@@ -61,20 +63,24 @@ export default function PostesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {postes.map((poste) => (
-                <TableRow key={poste.id}>
-                  <TableCell>{poste.titre}</TableCell>
-                  <TableCell>{poste.description}</TableCell>
-                  <TableCell>{poste.departement}</TableCell>
-                  <TableCell>
-                    <Link href={`/back-office/postes/${poste.id}`}>
-                      <Button variant="outline" size="sm">
-                        Voir détails
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {loading ? (
+                <SkeletonGeneralise rows={5} cols={4} />
+              ) : (
+                postes.map((poste) => (
+                  <TableRow key={poste.id}>
+                    <TableCell>{poste.titre}</TableCell>
+                    <TableCell>{poste.description}</TableCell>
+                    <TableCell>{poste.departement}</TableCell>
+                    <TableCell>
+                      <Link href={`/back-office/postes/${poste.id}`}>
+                        <Button variant="outline" size="sm">
+                          Voir détails
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>

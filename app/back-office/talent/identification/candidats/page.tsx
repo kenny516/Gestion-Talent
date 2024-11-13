@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,7 +14,8 @@ import Link from "next/link";
 import { api_url, Candidat } from "@/types";
 import axios from "axios";
 import { PageHeader } from "@/components/page-header";
-import { Badge } from "@/components/ui/badge"; // Assuming you have a Badge component in Shadcn
+import { Badge } from "@/components/ui/badge";
+import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 
 // Fetch candidates
 const fetchCandidates = async (): Promise<Candidat[]> => {
@@ -32,7 +32,7 @@ const fetchCandidates = async (): Promise<Candidat[]> => {
 const getStatusColor = (status: string) => {
   switch (status) {
     case "Retenu":
-      return "bg-green-500 text-white"; // Replace with actual Shadcn styling
+      return "bg-green-500 text-white";
     case "Refusé":
       return "bg-red-500 text-white";
     case "En attente":
@@ -43,11 +43,14 @@ const getStatusColor = (status: string) => {
 
 export default function CandidatesPage() {
   const [candidates, setCandidates] = useState<Candidat[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getCandidates = async () => {
+      setLoading(true);
       const data = await fetchCandidates();
       setCandidates(data);
+      setLoading(false);
     };
     getCandidates();
   }, []);
@@ -82,32 +85,40 @@ export default function CandidatesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {candidates.map((candidate) => (
-                <TableRow key={candidate.id}>
-                  <TableCell>{candidate.nom}</TableCell>
-                  <TableCell>{candidate.prenom}</TableCell>
-                  <TableCell>{candidate.email}</TableCell>
-                  <TableCell>{candidate.telephone || "N/A"}</TableCell>
-                  <TableCell>{candidate.dateCandidature}</TableCell>
-                  <TableCell>{candidate.poste?.departement || "N/A"}</TableCell>
-                  <TableCell>
-                    <Badge
-                      className={getStatusColor(
-                        candidate.status || "En attente"
-                      )}
-                    >
-                      {candidate.status || "En attente"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/back-office/candidats/${candidate.id}`}>
-                      <Button variant="outline" size="sm">
-                        Voir détails
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {loading
+                ?(
+                    <SkeletonGeneralise rows={5} cols={8}/>
+                )
+                : candidates.map((candidate) => (
+                    <TableRow key={candidate.id}>
+                      <TableCell>{candidate.nom}</TableCell>
+                      <TableCell>{candidate.prenom}</TableCell>
+                      <TableCell>{candidate.email}</TableCell>
+                      <TableCell>{candidate.telephone || "N/A"}</TableCell>
+                      <TableCell>{candidate.dateCandidature}</TableCell>
+                      <TableCell>
+                        {candidate.poste?.departement || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={getStatusColor(
+                            candidate.status || "En attente"
+                          )}
+                        >
+                          {candidate.status || "En attente"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/back-office/talent/identification/candidats/${candidate.id}`}
+                        >
+                          <Button variant="outline" size="sm">
+                            Voir détails
+                          </Button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </CardContent>
