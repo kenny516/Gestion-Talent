@@ -17,3 +17,15 @@ export const getNoteColor = (note: number) => {
     return "bg-green-500 text-white"; // Note élevée
   }
 };
+
+export const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Retenu":
+        return "bg-green-500 text-white";
+      case "Refusé":
+        return "bg-red-500 text-white";
+      case "En attente":
+      default:
+        return "bg-yellow-500 text-white";
+    }
+  };

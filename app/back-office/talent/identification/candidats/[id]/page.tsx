@@ -3,8 +3,17 @@ import { api_url, CandidaturData } from "@/types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
-import { Award, Building2, Calendar, ClipboardList, Mail, Phone, User } from "lucide-react";
+import {
+  Award,
+  Building2,
+  Calendar,
+  ClipboardList,
+  Mail,
+  Phone,
+  User,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getNiveauColor, getNoteColor, getStatusColor } from "@/components/ui/code-color";
 
 // Function to fetch candidate details by ID from the API
 const getCandidate = async (id: string): Promise<CandidaturData | null> => {
@@ -20,17 +29,6 @@ const getCandidate = async (id: string): Promise<CandidaturData | null> => {
     return null;
   }
 };
-const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Retenu":
-        return "bg-green-500 text-white";
-      case "Refusé":
-        return "bg-red-500 text-white";
-      case "En attente":
-      default:
-        return "bg-yellow-500 text-white";
-    }
-  };
 
 export default async function CandidateDetailsPage({
   params,
@@ -134,7 +132,9 @@ export default async function CandidateDetailsPage({
 
               <div className="pt-4">
                 <Badge
-                  className={`${getStatusColor(candidate.status || "En attente")} px-3 py-1`}
+                  className={`${getStatusColor(
+                    candidate.status || "En attente"
+                  )} px-3 py-1`}
                 >
                   {candidate.status}
                 </Badge>
@@ -163,62 +163,64 @@ export default async function CandidateDetailsPage({
                 <p className="mt-4">{candidate.poste.description}</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                {/* Competences Section */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold flex items-center gap-2">
-                    <Award className="h-4 w-4" />
-                    Compétences
-                  </h4>
-                  {candidate.competences.length > 0 ? (
-                    <div className="space-y-2">
-                      {candidate.competences.map((comp) => (
-                        <div
-                          key={comp.id}
-                          className="flex items-center justify-between bg-secondary/20 p-2 rounded"
+              {/* Compétences Section */}
+              <div className="space-y-3">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Award className="h-4 w-4" />
+                  Compétences
+                </h4>
+                {candidate.competences.length > 0 ? (
+                  <div className="space-y-2">
+                    {candidate.competences.map((comp) => (
+                      <div
+                        key={comp.id}
+                        className={`flex items-center justify-between bg-secondary/20 p-2 rounded`}
+                      >
+                        <span>{comp.nom}</span>
+                        <Badge
+                          className={`${getNiveauColor(comp.niveau)} px-3 py-1`}
                         >
-                          <span>{comp.nom}</span>
-                          <Badge variant="secondary">
-                            Niveau: {comp.niveau}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      Aucune compétence disponible.
-                    </p>
-                  )}
-                </div>
+                          Niveau: {comp.niveau}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Aucune compétence disponible.
+                  </p>
+                )}
+              </div>
 
-                {/* Notes Section */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold flex items-center gap-2">
-                    <ClipboardList className="h-4 w-4" />
-                    Notes
-                  </h4>
-                  {candidate.notes.length > 0 ? (
-                    <div className="space-y-2">
-                      {candidate.notes.map((note) => (
-                        <div
-                          key={note.idCandidat}
-                          className="bg-secondary/20 p-2 rounded"
-                        >
-                          <p className="text-sm font-medium">
-                            {note.typeNote.nomType}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {note.note ?? "N/A"}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      Aucune note disponible.
-                    </p>
-                  )}
-                </div>
+              {/* Notes Section */}
+              <div className="space-y-3">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <ClipboardList className="h-4 w-4" />
+                  Notes
+                </h4>
+                {candidate.notes.length > 0 ? (
+                  <div className="space-y-2">
+                    {candidate.notes.map((note) => (
+                      <div
+                        key={note.idCandidat}
+                        className={`bg-secondary/20 p-2 rounded ${getNoteColor(
+                          note.note ?? 0
+                        )}`}
+                      >
+                        <p className="text-sm font-medium">
+                          {note.typeNote.nomType}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {note.note ?? "N/A"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Aucune note disponible.
+                  </p>
+                )}
               </div>
             </div>
           </CardContent>

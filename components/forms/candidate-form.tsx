@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -23,6 +22,7 @@ import { useEffect, useState } from "react";
 import { api_url, Competence, Poste } from "@/types";
 import { Card } from "../ui/card";
 import { Slider } from "../ui/slider";
+import { useToast } from "@/hooks/use-toast";
 
 const candidateSchema = z.object({
   nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
@@ -44,6 +44,7 @@ const candidateSchema = z.object({
 export function CandidateForm() {
   const [postes, setPostes] = useState<Poste[]>([]);
   const [competences, setCompetences] = useState<Competence[]>([]);
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof candidateSchema>>({
     resolver: zodResolver(candidateSchema),
     defaultValues: {
@@ -63,7 +64,7 @@ export function CandidateForm() {
         const response = await axios.get(api_url + "poste");
         setPostes(response.data);
       } catch (error) {
-        toast.error(error + "Erreur lors du chargement des postes");
+        console.error(error + "Erreur lors du chargement des postes");
       }
     };
     fetchPostes();
@@ -79,7 +80,7 @@ export function CandidateForm() {
       form.setValue("competences", competencesWithNiveau);
       setCompetences(competencesWithNiveau);
     } catch (error) {
-      toast.error(error + "Erreur lors du chargement des competences");
+      console.error(error + "Erreur lors du chargement des competences");
     }
   };
 
@@ -96,10 +97,18 @@ export function CandidateForm() {
           "Content-Type": "application/json",
         },
       });
-      toast.success("Candidature enregistrée avec succès!");
+      toast({
+        variant:"default",
+        title: "Uh oh! Something went wrong.",
+        description: "Candidature enregistrée avec succès!",
+      });
       form.reset();
-    } catch (error) {
-      toast.error(error + "Erreur lors de l'enregistrement de la candidature");
+    } catch (error:any) {
+        toast({
+            variant:"destructive",
+            title: "Uh oh! une erreur.",
+            description: error.response.data,
+          });
     }
   }
 
@@ -251,7 +260,7 @@ export function CandidateForm() {
                   name={`competences.${index}.niveau`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{competence.nom} (0-10)</FormLabel>
+                      <FormLabel>{competence.nom} (0-5)</FormLabel>
                       <FormControl>
                         <Slider
                           min={0}

@@ -16,6 +16,7 @@ import axios from "axios";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
+import { getStatusColor } from "@/components/ui/code-color";
 
 // Fetch candidates
 const fetchCandidates = async (): Promise<Candidat[]> => {
@@ -28,18 +29,6 @@ const fetchCandidates = async (): Promise<Candidat[]> => {
   }
 };
 
-// Function to get status color
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "Retenu":
-      return "bg-green-500 text-white";
-    case "Refusé":
-      return "bg-red-500 text-white";
-    case "En attente":
-    default:
-      return "bg-yellow-500 text-white";
-  }
-};
 
 export default function CandidatesPage() {
   const [candidates, setCandidates] = useState<Candidat[]>([]);
