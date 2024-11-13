@@ -98,17 +98,17 @@ export function CandidateForm() {
         },
       });
       toast({
-        variant:"default",
+        variant: "default",
         title: "Succes.",
         description: "Candidature enregistrée avec succès!",
       });
       form.reset();
-    } catch (error:any) {
-        toast({
-            variant:"destructive",
-            title: "Uh oh! une erreur.",
-            description: error.response.data,
-          });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! une erreur.",
+        description: error.response.data,
+      });
     }
   }
 
