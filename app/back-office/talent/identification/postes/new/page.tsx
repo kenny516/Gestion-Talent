@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { api_url, Competence } from "@/types";
 import { z } from "zod";
 import { PageHeader } from "@/components/page-header";
+import { useToast } from "@/hooks/use-toast";
 
 const positionSchema = z.object({
   titre: z.string().min(1, { message: "Le titre est requis" }),
@@ -35,6 +36,7 @@ const CreatePosition = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchCompetences = async () => {
@@ -87,17 +89,24 @@ const CreatePosition = () => {
       console.log(formData);
       await axios.post(api_url + "poste", formData);
 
-      alert("Position created successfully!");
+      toast({
+        variant:"default",
+        title: "Poste enregistrer avec succes",
+        description: "avec ses competences",
+      });
       setFormData({
         titre: "",
         description: "",
         departement: "",
         competences_id: [],
       });
-    } catch (err) {
-      setError("Erreur lors de la création du poste");
-      console.error(err);
-    } finally {
+    } catch (error:any) {
+        toast({
+            variant:"destructive",
+            title: "Uh oh! une erreur.",
+            description: error.response.data,
+          });
+    }finally {
       setLoading(false);
     }
   };

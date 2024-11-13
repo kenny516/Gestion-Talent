@@ -99,7 +99,7 @@ export function CandidateForm() {
       });
       toast({
         variant:"default",
-        title: "Uh oh! Something went wrong.",
+        title: "Succes.",
         description: "Candidature enregistrée avec succès!",
       });
       form.reset();

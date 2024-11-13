@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -29,10 +30,12 @@ const fetchCandidates = async (): Promise<Candidat[]> => {
   }
 };
 
-
 export default function CandidatesPage() {
   const [candidates, setCandidates] = useState<Candidat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedStatus, setSelectedStatus] = useState<
+    "En attente" | "Retenu" | "Refusé" | "Tous"
+  >("Tous");
 
   useEffect(() => {
     const getCandidates = async () => {
@@ -44,6 +47,12 @@ export default function CandidatesPage() {
     getCandidates();
   }, []);
 
+  // Filter candidates based on selected status
+  const filteredCandidates =
+    selectedStatus === "Tous"
+      ? candidates
+      : candidates.filter((candidate) => candidate.status === selectedStatus);
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -53,11 +62,28 @@ export default function CandidatesPage() {
       <Card>
         <CardHeader className="flex gap-5">
           <CardTitle>Liste des Candidats</CardTitle>
-          <Link href="/back-office/talent/identification/candidats/new">
-            <Button variant="default" size="sm">
+          <Link
+            href="/back-office/talent/identification/candidats/new"
+          >
+            <Button variant="default" size="sm" >
               Nouveau candidat
             </Button>
           </Link>
+          {/* Select for status filtering */}
+          <select
+            value={selectedStatus}
+            onChange={(e) =>
+              setSelectedStatus(
+                e.target.value as "En attente" | "Retenu" | "Refusé" | "Tous"
+              )
+            }
+            className="border border-gray-300 rounded-md p-2"
+          >
+            <option value="Tous">Tous</option>
+            <option value="En attente">En attente</option>
+            <option value="Retenu">Retenu</option>
+            <option value="Refusé">Refusé</option>
+          </select>
         </CardHeader>
         <CardContent>
           <Table>
@@ -74,40 +100,40 @@ export default function CandidatesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading
-                ?(
-                    <SkeletonGeneralise rows={5} cols={8}/>
-                )
-                : candidates.map((candidate) => (
-                    <TableRow key={candidate.id}>
-                      <TableCell>{candidate.nom}</TableCell>
-                      <TableCell>{candidate.prenom}</TableCell>
-                      <TableCell>{candidate.email}</TableCell>
-                      <TableCell>{candidate.telephone || "N/A"}</TableCell>
-                      <TableCell>{candidate.dateCandidature}</TableCell>
-                      <TableCell>
-                        {candidate.poste?.departement || "N/A"}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={getStatusColor(
-                            candidate.status || "En attente"
-                          )}
-                        >
-                          {candidate.status || "En attente"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Link
-                          href={`/back-office/talent/identification/candidats/${candidate.id}`}
-                        >
-                          <Button variant="outline" size="sm">
-                            Voir détails
-                          </Button>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+              {loading ? (
+                <SkeletonGeneralise rows={5} cols={8} />
+              ) : (
+                filteredCandidates.map((candidate) => (
+                  <TableRow key={candidate.id}>
+                    <TableCell>{candidate.nom}</TableCell>
+                    <TableCell>{candidate.prenom}</TableCell>
+                    <TableCell>{candidate.email}</TableCell>
+                    <TableCell>{candidate.telephone || "N/A"}</TableCell>
+                    <TableCell>{candidate.dateCandidature}</TableCell>
+                    <TableCell>
+                      {candidate.poste?.departement || "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        className={getStatusColor(
+                          candidate.status || "En attente"
+                        )}
+                      >
+                        {candidate.status || "En attente"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/back-office/talent/identification/candidats/${candidate.id}`}
+                      >
+                        <Button variant="outline" size="sm">
+                          Voir détails
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
