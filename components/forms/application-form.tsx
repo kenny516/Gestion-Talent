@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -12,10 +12,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "sonner"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   fullName: z.string().min(2, {
@@ -36,7 +36,7 @@ const formSchema = z.object({
   coverLetter: z.string().min(50, {
     message: "Cover letter must be at least 50 characters.",
   }),
-})
+});
 
 export function ApplicationForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,17 +49,17 @@ export function ApplicationForm() {
       education: "",
       coverLetter: "",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    toast.success("Application submitted successfully!")
-    console.log(values)
+    toast.success("Application submitted successfully!");
+    console.log(values);
   }
 
   return (
     <Card className="p-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-6">
           <FormField
             control={form.control}
             name="fullName"
@@ -73,7 +73,7 @@ export function ApplicationForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="email"
@@ -81,13 +81,17 @@ export function ApplicationForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="john@example.com" {...field} />
+                  <Input
+                    type="email"
+                    placeholder="john@example.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="phone"
@@ -101,7 +105,7 @@ export function ApplicationForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="experience"
@@ -119,7 +123,7 @@ export function ApplicationForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="education"
@@ -137,7 +141,7 @@ export function ApplicationForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="coverLetter"
@@ -155,10 +159,12 @@ export function ApplicationForm() {
               </FormItem>
             )}
           />
-          
-          <Button type="submit" >Submit Application</Button>
+
+            <div className="flex justify-center items-center">
+            <Button variant="default" type="submit">Submit Application</Button>
+            </div>
         </form>
       </Form>
     </Card>
-  )
+  );
 }

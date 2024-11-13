@@ -17,6 +17,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { ModeToggle } from "@/components/theme/toggel";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -59,6 +60,9 @@ export default function RootLayout({
                           <BreadcrumbItem>
                             <BreadcrumbPage>Data Fetching</BreadcrumbPage>
                           </BreadcrumbItem>
+                          <div>
+                            <ModeToggle />
+                          </div>
                         </BreadcrumbList>
                       </Breadcrumb>
                     </div>

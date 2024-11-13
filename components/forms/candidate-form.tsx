@@ -110,7 +110,7 @@ export function CandidateForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 "
+          className="space-y-6 flex flex-col"
         >
           {/* Nom Field */}
           <FormField
@@ -265,6 +265,7 @@ export function CandidateForm() {
             />
           ))}
           {/* Submit Button */}
+
           <Button type="submit">Soumettre la candidature</Button>
         </form>
       </Form>
