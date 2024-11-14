@@ -9,7 +9,7 @@ export const getNiveauColor = (niveau: number) => {
 };
 
 export const getNoteColor = (note: number) => {
-  if (note <= 5) {
+  if (note < 5) {
     return "bg-red-500 text-white"; // Note faible
   } else if (note <= 8) {
     return "bg-yellow-500 text-white"; // Note moyenne

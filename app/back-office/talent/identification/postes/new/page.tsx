@@ -165,6 +165,7 @@ const CreatePosition = () => {
                           <FormItem className="flex items-center mt-2">
                             <FormControl>
                               <input
+                                title="competence"
                                 type="checkbox"
                                 id={`competence-${competence.id}`}
                                 checked={form

@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen  bg-background">
+    <div className="min-h-screen bg-background">
       <main className="mx-auto">
         <SidebarProvider>
           <AppSidebar />
