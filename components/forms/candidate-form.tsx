@@ -23,6 +23,7 @@ import { api_url, Competence, Poste } from "@/types";
 import { Card } from "../ui/card";
 import { Slider } from "../ui/slider";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const candidateSchema = z.object({
   nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
@@ -57,6 +58,7 @@ export function CandidateForm() {
       competences: [],
     },
   });
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPostes = async () => {
@@ -92,7 +94,7 @@ export function CandidateForm() {
   async function onSubmit(values: z.infer<typeof candidateSchema>) {
     try {
       console.log("Données envoyées :", JSON.stringify(values, null, 2));
-      await axios.post(api_url + "candidat", values, {
+      const response = await axios.post(api_url + "candidat", values, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,7 +104,11 @@ export function CandidateForm() {
         title: "Succes.",
         description: "Candidature enregistrée avec succès!",
       });
+
       form.reset();
+      router.push(
+        `/back-office/talent/identification/candidats/${response.data.id}`
+      );
     } catch (error: any) {
       toast({
         variant: "destructive",

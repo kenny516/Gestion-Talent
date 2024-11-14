@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"; // Assuming Select component
 import axios from "axios";
-import { api_url, Candidat, TypeNote, NoteCandidat, NoteCandidatForm } from "@/types";
+import { api_url, Candidat, TypeNote, NoteCandidatForm } from "@/types";
 import { PageHeader } from "@/components/page-header";
 
 export default function CandidateNoteForm() {

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { api_url, Candidat } from "@/types";
 import axios from "axios";
-import CandidatTable from "./(component)/candidat-table";
+import CandidatTable from "../(component)/candidat-table";
 
 // Fetch candidates
 const fetchCandidates = async (): Promise<Candidat[]> => {
@@ -32,8 +32,8 @@ export default function CandidatesPage() {
 
   return (
     <CandidatTable
-      title="Liste des candidats"
-      description="Liste des candidat qui on postuler a une offre"
+      title="Eligible candidat"
+      description="Liste des candidat embauchable"
       candidats={candidates}
       loading={loading}
     />
