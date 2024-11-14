@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api_url, CandidaturData } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -13,50 +14,152 @@ import {
   User,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getNiveauColor, getNoteColor, getStatusColor } from "@/components/ui/code-color";
+import {
+  getNiveauColor,
+  getNoteColor,
+  getStatusColor,
+} from "@/components/ui/code-color";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Function to fetch candidate details by ID from the API
-const getCandidate = async (id: string): Promise<CandidaturData | null> => {
-  try {
-    const response = await fetch(api_url + `candidat/${id}`);
-    if (!response.ok) {
-      throw new Error("Candidate not found");
-    }
-    const data: CandidaturData = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+// Default candidate data
+const defaultCandidat: CandidaturData = {
+  id: 0,
+  nom: "Non trouvé",
+  prenom: "Inconnu",
+  email: "non.trouve@email.com",
+  telephone: "0000000000",
+  dateCandidature: "00000000",
+  poste: {
+    id: 0,
+    titre: "Non spécifié",
+    description: "Aucune description disponible.",
+    departement: "Non spécifié",
+  },
+  competences: [],
+  notes: [],
+  status: "En attente",
+  isEligible: false,
 };
 
-export default async function CandidateDetailsPage({
+export default function CandidateDetailsPage({
   params,
 }: {
   params: { id: string };
 }) {
-  // Fetch candidate data
-  let candidate = await getCandidate(params.id);
+  const { toast } = useToast();
+  const [candidat, setCandidat] = useState<CandidaturData>(defaultCandidat);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [id, setId] = useState<string | null>(null);
 
-  // Set default values if the candidate is not found
-  if (!candidate) {
-    candidate = {
-      id: 0,
-      nom: "Non trouvé",
-      prenom: "Inconnu",
-      email: "non.trouve@email.com",
-      telephone: "0000000000",
-      dateCandidature: "00000000",
-      poste: {
-        id: 0,
-        titre: "Non spécifié",
-        description: "Aucune description disponible.",
-        departement: "Non spécifié",
-      },
-      competences: [],
-      notes: [],
-      status: "En attente",
+  // Unwrap `params` in useEffect
+  useEffect(() => {
+    const unwrapParams = async () => {
+      const unwrappedParams = await params;
+      setId(unwrappedParams.id);
     };
+    unwrapParams();
+  }, [params]);
+
+  // Fetch candidate data
+  useEffect(() => {
+    if (!id) return;
+    
+    const fetchCandidat = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(api_url + `candidat/${id}`);
+        if (!response.ok) {
+          throw new Error("Candidate not found");
+        }
+        const data: CandidaturData = await response.json();
+        setCandidat(data);
+      } catch (error) {
+        console.error(error);
+        setCandidat(defaultCandidat); // Set to default if error occurs
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCandidat();
+  }, [id]);
+
+  // Function to handle candidate hiring
+  const embaucher = async () => {
+    if (!candidat?.id) return; // Ensure the candidate exists
+    alert(`Candidat ${candidat?.prenom} ${candidat?.nom} embauché!`);
+    try {
+      await axios.get(api_url + `/${candidat?.id}`);
+      toast({
+        variant: "default",
+        title: "Success",
+        description: `${candidat?.prenom} ${candidat?.nom} a été embauché avec succès!`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Error",
+        description: "Erreur lors de l'approbation de l'embauche",
+      });
+    }
+    // Additional logic to update candidate status in the database can go here
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-8 w-1/2" />
+          <Skeleton className="h-8 w-32" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Left Column - Personal Info Skeleton */}
+          <Card className="md:col-span-1">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Skeleton className="h-5 w-5 rounded-full" />
+                <Skeleton className="h-6 w-1/2" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-5 w-2/3" />
+              <Skeleton className="h-10 w-1/3" />
+            </CardContent>
+          </Card>
+
+          {/* Middle Column - Job Details Skeleton */}
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Skeleton className="h-5 w-5 rounded-full" />
+                <Skeleton className="h-6 w-1/3" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-5 w-full" />
+              <Skeleton className="h-5 w-4/5" />
+
+              <div className="space-y-3">
+                <Skeleton className="h-5 w-1/3" />
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-1/2" />
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-5 w-1/3" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -90,7 +193,7 @@ export default async function CandidateDetailsPage({
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Nom complet</p>
-                  <p className="font-medium">{`${candidate.prenom} ${candidate.nom}`}</p>
+                  <p className="font-medium">{`${candidat?.prenom} ${candidat?.nom}`}</p>
                 </div>
               </div>
 
@@ -100,7 +203,7 @@ export default async function CandidateDetailsPage({
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium">{candidate.email}</p>
+                  <p className="font-medium">{candidat?.email}</p>
                 </div>
               </div>
 
@@ -110,7 +213,7 @@ export default async function CandidateDetailsPage({
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Téléphone</p>
-                  <p className="font-medium">{candidate.telephone || "N/A"}</p>
+                  <p className="font-medium">{candidat?.telephone || "N/A"}</p>
                 </div>
               </div>
 
@@ -123,7 +226,7 @@ export default async function CandidateDetailsPage({
                     Date de candidature
                   </p>
                   <p className="font-medium">
-                    {new Date(candidate.dateCandidature).toLocaleDateString(
+                    {new Date(candidat?.dateCandidature).toLocaleDateString(
                       "fr-FR"
                     )}
                   </p>
@@ -133,12 +236,15 @@ export default async function CandidateDetailsPage({
               <div className="pt-4">
                 <Badge
                   className={`${getStatusColor(
-                    candidate.status || "En attente"
+                    candidat?.status || "En attente"
                   )} px-3 py-1`}
                 >
-                  {candidate.status}
+                  {candidat?.status}
                 </Badge>
               </div>
+              {candidat?.isEligible ? (
+                <Button onClick={embaucher}>Embauche le candidat</Button>
+              ) : null}
             </div>
           </CardContent>
         </Card>
@@ -155,12 +261,12 @@ export default async function CandidateDetailsPage({
             <div className="space-y-4">
               <div className="bg-primary/5 p-4 rounded-lg">
                 <h3 className="text-xl font-semibold">
-                  {candidate.poste.titre}
+                  {candidat?.poste.titre}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Département: {candidate.poste.departement}
+                  Département: {candidat?.poste.departement}
                 </p>
-                <p className="mt-4">{candidate.poste.description}</p>
+                <p className="mt-4">{candidat?.poste.description}</p>
               </div>
 
               {/* Compétences Section */}
@@ -169,9 +275,9 @@ export default async function CandidateDetailsPage({
                   <Award className="h-4 w-4" />
                   Compétences
                 </h4>
-                {candidate.competences.length > 0 ? (
+                {candidat?.competences.length > 0 ? (
                   <div className="space-y-2">
-                    {candidate.competences.map((comp) => (
+                    {candidat?.competences.map((comp) => (
                       <div
                         key={comp.id}
                         className={`flex items-center justify-between bg-secondary/20 p-2 rounded`}
@@ -186,40 +292,7 @@ export default async function CandidateDetailsPage({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Aucune compétence disponible.
-                  </p>
-                )}
-              </div>
-
-              {/* Notes Section */}
-              <div className="space-y-3">
-                <h4 className="font-semibold flex items-center gap-2">
-                  <ClipboardList className="h-4 w-4" />
-                  Notes
-                </h4>
-                {candidate.notes.length > 0 ? (
-                  <div className="space-y-2">
-                    {candidate.notes.map((note) => (
-                      <div
-                        key={note.idCandidat}
-                        className={`bg-secondary/20 p-2 rounded ${getNoteColor(
-                          note.note ?? 0
-                        )}`}
-                      >
-                        <p className="text-sm font-medium">
-                          {note.typeNote.nomType}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {note.note ?? "N/A"}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Aucune note disponible.
-                  </p>
+                  <p>Aucune compétence spécifiée.</p>
                 )}
               </div>
             </div>

@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen  bg-background">
+    <div className="min-h-screen bg-background">
       <main className="mx-auto">
         <SidebarProvider>
           <AppSidebar />
@@ -40,11 +40,11 @@ export default function RootLayout({
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">RH applicait</BreadcrumbLink>
+                      <BreadcrumbLink href="/back-office/talent/">RH applicait</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                      <BreadcrumbPage></BreadcrumbPage>
                     </BreadcrumbItem>
                     <div>
                       <ModeToggle />

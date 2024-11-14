@@ -1,7 +1,7 @@
 // export types for individual tables
 
 
-export const api_url = "http://localhost:8080/gestion_talent/api/";// export types for each table in the database
+export const api_url = process.env.NEXT_PUBLIC_API_URL;// export types for each table in the database
 // Types for each table in the database
 export type Poste = {
     id: number;
@@ -29,7 +29,12 @@ export type TypeNote = {
 export type NoteCandidat = {
     idCandidat: number;
     typeNote: TypeNote;
-    note?: number;
+    note: number;
+};
+export type NoteCandidatForm = {
+    idCandidat: number;
+    idTypeNote: number;
+    note: number;
 };
 
 export type Employe = {
@@ -98,6 +103,7 @@ export type CandidaturData={
     status?: 'En attente' | 'Retenu' | 'Refusé';
     competences: CompetencesCandidats[];
     notes: NoteCandidat[];
+    isEligible: boolean;
 }
 export type PosteCompetenceData={
     poste:Poste;

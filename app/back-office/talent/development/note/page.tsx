@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"; // Assuming Select component
 import axios from "axios";
-import { api_url, Candidat, TypeNote, NoteCandidat } from "@/types";
+import { api_url, Candidat, TypeNote, NoteCandidatForm } from "@/types";
 import { PageHeader } from "@/components/page-header";
 
 export default function CandidateNoteForm() {
@@ -39,7 +39,7 @@ export default function CandidateNoteForm() {
 
     const fetchTypeNotes = async () => {
       try {
-        const response = await axios.get(api_url + "typenotes");
+        const response = await axios.get(api_url + "typenote");
         setTypeNotes(response.data);
       } catch (error) {
         console.error("Error fetching type notes:", error);
@@ -55,7 +55,7 @@ export default function CandidateNoteForm() {
     e.preventDefault();
 
     if (selectedCandidateId && selectedTypeNoteId && note !== undefined) {
-      const noteCandidat: NoteCandidat = {
+      const noteCandidat: NoteCandidatForm = {
         idCandidat: selectedCandidateId,
         idTypeNote: selectedTypeNoteId,
         note,

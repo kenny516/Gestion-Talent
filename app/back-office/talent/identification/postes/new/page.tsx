@@ -1,15 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { api_url, Competence } from "@/types";
 import { z } from "zod";
 import { PageHeader } from "@/components/page-header";
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const positionSchema = z.object({
   titre: z.string().min(1, { message: "Le titre est requis" }),
@@ -23,18 +33,18 @@ const positionSchema = z.object({
 type PositionFormData = z.infer<typeof positionSchema>;
 
 const CreatePosition = () => {
-  const [formData, setFormData] = useState<PositionFormData>({
-    titre: "",
-    description: "",
-    departement: "",
-    competences_id: [],
-  });
   const [competences, setCompetences] = useState<Competence[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<
-    Record<string, string>
-  >({});
+  const { toast } = useToast();
+
+  const form = useForm<PositionFormData>({
+    resolver: zodResolver(positionSchema),
+    defaultValues: {
+      titre: "",
+      description: "",
+      departement: "",
+      competences_id: [],
+    },
+  });
 
   useEffect(() => {
     const fetchCompetences = async () => {
@@ -49,164 +59,145 @@ const CreatePosition = () => {
     fetchCompetences();
   }, []);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setValidationErrors({});
-  };
-
   const handleCompetenceChange = (id: number) => {
-    setFormData((prevFormData) => {
-      const isSelected = prevFormData.competences_id.includes(id);
-      const updatedCompetences = isSelected
-        ? prevFormData.competences_id.filter((compId) => compId !== id)
-        : [...prevFormData.competences_id, id];
+    const { competences_id } = form.getValues();
+    const isSelected = competences_id.includes(id);
+    const updatedCompetences = isSelected
+      ? competences_id.filter((compId) => compId !== id)
+      : [...competences_id, id];
 
-      return { ...prevFormData, competences_id: updatedCompetences };
-    });
+    form.setValue("competences_id", updatedCompetences);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const result = positionSchema.safeParse(formData);
-    if (!result.success) {
-      const errors = result.error.errors.reduce((acc, curr) => {
-        acc[curr.path[0]] = curr.message;
-        return acc;
-      }, {} as Record<string, string>);
-      setValidationErrors(errors);
-      setLoading(false);
-      return;
-    }
-
+  async function onSubmit(values: PositionFormData) {
     try {
-      console.log(formData);
-      await axios.post(api_url + "poste", formData);
-
-      alert("Position created successfully!");
-      setFormData({
-        titre: "",
-        description: "",
-        departement: "",
-        competences_id: [],
+      console.log("Données envoyées :", JSON.stringify(values, null, 2));
+      await axios.post(api_url + "poste", values, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-    } catch (err) {
-      setError("Erreur lors de la création du poste");
-      console.error(err);
-    } finally {
-      setLoading(false);
+      toast({
+        variant: "default",
+        title: "Succès.",
+        description: "Poste enregistrée avec succès!",
+      });
+      form.reset();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! une erreur.",
+        description: error.response?.data || "Erreur lors de l'enregistrement.",
+      });
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Creation de poste"
-        description="Cree un nouveau poste"
+        title="Création de poste"
+        description="Créer un nouveau poste"
       />
       <Card>
         <CardHeader>
           <CardTitle>Créer un nouveau poste</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                htmlFor="titre"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Titre
-              </label>
-              <Input
-                id="titre"
-                name="titre"
-                placeholder="Titre"
-                value={formData.titre}
-                onChange={handleChange}
-                required
-              />
-              {validationErrors.titre && (
-                <p className="text-red-500">{validationErrors.titre}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description
-              </label>
-              <Textarea
-                id="description"
-                name="description"
-                placeholder="Description"
-                value={formData.description}
-                onChange={handleChange}
-              />
-              {validationErrors.description && (
-                <p className="text-red-500">{validationErrors.description}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="departement"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Département
-              </label>
-              <Input
-                id="departement"
-                name="departement"
-                placeholder="Département"
-                value={formData.departement}
-                onChange={handleChange}
-                required
-              />
-              {validationErrors.departement && (
-                <p className="text-red-500">{validationErrors.departement}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Compétences
-              </label>
-              <div className="space-y-2">
-                {competences.map((competence) => (
-                  <div key={competence.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`competence-${competence.id}`}
-                      checked={formData.competences_id.includes(competence.id)}
-                      onChange={() => handleCompetenceChange(competence.id)}
-                    />
-                    <label
-                      htmlFor={`competence-${competence.id}`}
-                      className="ml-2"
-                    >
-                      {competence.nom}
-                    </label>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Personal Information Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  {/* titre */}
+                  <FormField
+                    control={form.control}
+                    name="titre"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Titre</FormLabel>
+                        <FormControl>
+                          <Input placeholder="titre" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* description */}
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="description" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* departement */}
+                  <FormField
+                    control={form.control}
+                    name="departement"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Département</FormLabel>
+                        <FormControl>
+                          <Input placeholder="département" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Compétences */}
+                  <div>
+                    <FormLabel>Compétences</FormLabel>
+                    {competences.map((competence) => (
+                      <FormField
+                        key={competence.id}
+                        control={form.control}
+                        name="competences_id"
+                        render={() => (
+                          <FormItem className="flex items-center mt-2">
+                            <FormControl>
+                              <input
+                                title="competence"
+                                type="checkbox"
+                                id={`competence-${competence.id}`}
+                                checked={form
+                                  .watch("competences_id")
+                                  .includes(competence.id)}
+                                onChange={() =>
+                                  handleCompetenceChange(competence.id)
+                                }
+                              />
+                            </FormControl>
+                            <FormLabel
+                              htmlFor={`competence-${competence.id}`}
+                              className="ml-2"
+                            >
+                              {competence.nom}
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                    <FormMessage />
                   </div>
-                ))}
-                {validationErrors.competences_id && (
-                  <p className="text-red-500">
-                    {validationErrors.competences_id}
-                  </p>
-                )}
+                </div>
               </div>
-            </div>
-            {error && <p className="text-red-500">{error}</p>}
-            <Button type="submit" disabled={loading}>
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Créer le poste"
-              )}
-            </Button>
-          </form>
+              {/* Submit Button */}
+              <div className="flex justify-end mt-6">
+                <Button type="submit" className="w-full md:w-auto">
+                  Soumettre la poste
+                </Button>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
