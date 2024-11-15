@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   BookOpen,
   Bot,
+  BotMessageSquare,
   Frame,
   Map,
   PieChart,
@@ -38,9 +39,18 @@ const data = {
       icon: User,
       isActive: true,
       items: [
-        { title: "Internal Search", url: "/back-office/talent/identification/search" },
-        { title: "candidat", url: "/back-office/talent/identification/candidats" },
-        { title: "employe", url: "/back-office/talent/identification/employees" },
+        {
+          title: "Internal Search",
+          url: "/back-office/talent/identification/search",
+        },
+        {
+          title: "candidat",
+          url: "/back-office/talent/identification/candidats",
+        },
+        {
+          title: "employe",
+          url: "/back-office/talent/identification/employees",
+        },
         { title: "poste", url: "/back-office/talent/identification/postes" },
       ],
     },
@@ -49,9 +59,18 @@ const data = {
       url: "/back-office/talent/acquisition",
       icon: Save,
       items: [
-        { title: "Job Posting", url: "/back-office/talent/acquisition/posting" },
-        { title: "Application Form", url: "/back-office/talent/acquisition/apply" },
-        { title: "Offre Embauche", url: "/back-office/talent/acquisition/offreEmbauche" },
+        {
+          title: "Job Posting",
+          url: "/back-office/talent/acquisition/posting",
+        },
+        {
+          title: "Application Form",
+          url: "/back-office/talent/acquisition/apply",
+        },
+        {
+          title: "Offre Embauche",
+          url: "/back-office/talent/acquisition/offreEmbauche",
+        },
       ],
     },
     {
@@ -68,19 +87,9 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Ai",
+      url: "/back-office/chat/",
+      icon: BotMessageSquare,
     },
   ],
 };

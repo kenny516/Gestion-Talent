@@ -66,15 +66,13 @@ export default function CandidateDetailsPage({
   // Fetch candidate data
   useEffect(() => {
     if (!id) return;
-    
+
     const fetchCandidat = async () => {
       try {
         setLoading(true);
-        const response = await fetch(api_url + `candidat/${id}`);
-        if (!response.ok) {
-          throw new Error("Candidate not found");
-        }
-        const data: CandidaturData = await response.json();
+        const response = await axios.get(api_url + `candidat/${id}`);
+        const data: CandidaturData = response.data;
+        console.log(data);
         setCandidat(data);
       } catch (error) {
         console.error(error);
@@ -161,7 +159,6 @@ export default function CandidateDetailsPage({
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -293,6 +290,35 @@ export default function CandidateDetailsPage({
                   </div>
                 ) : (
                   <p>Aucune compétence spécifiée.</p>
+                )}
+              </div>
+              {/* Notes Section */}
+              <div className="space-y-3">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <ClipboardList className="h-4 w-4" />
+                  Notes
+                </h4>
+                {candidat.notes.length > 0 ? (
+                  <div className="space-y-2">
+                    {candidat.notes.map((note) => (
+                      <div
+                        key={note.typeNote.id}
+                        className={`bg-secondary/20 p-2 rounded ${getNoteColor(
+                          note.note ?? 0
+                        )}`}
+                      >
+                        <Badge
+                          className={`${getNoteColor(note.note)} px-3 py-1`}
+                        >
+                          {note.typeNote.nomType} : {note.note}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Aucune note disponible.
+                  </p>
                 )}
               </div>
             </div>

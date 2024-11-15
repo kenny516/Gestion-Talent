@@ -100,7 +100,7 @@ export type CandidaturData={
     telephone?: string;
     dateCandidature: string;
     poste: Poste;
-    status?: 'En attente' | 'Retenu' | 'Refusé';
+    status: 'En attente' | 'Retenu' | 'Refusé';
     competences: CompetencesCandidats[];
     notes: NoteCandidat[];
     isEligible: boolean;
