@@ -4,7 +4,7 @@
 
 Ce projet est une application de gestion des talents construite avec [Next.js](https://nextjs.org). Elle permet de gérer les candidats, les employés, et les postes au sein d'une entreprise.
 
-## 📂Structure du Projet
+##📂Structure du Projet
 
 ```
 .env
