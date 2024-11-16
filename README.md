@@ -1,5 +1,3 @@
-Bien sûr, voici une version améliorée visuellement du README :
-
 ---
 
 # Gestion des Talents
@@ -79,7 +77,7 @@ tsconfig.json
 
 1. Clonez le dépôt :
    ```bash
-   git clone <url-du-repo>
+   git clone https://github.com/kenny516/Gestion-Talent.git
    cd gestion_talent
    ```
 
@@ -123,7 +121,3 @@ Les contributions sont les bienvenues ! Veuillez consulter le fichier CONTRIBUTI
 Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus d'informations.
 
 ---
-
-Cela devrait fournir une présentation claire et visuellement agréable de votre projet. N'hésitez pas à ajuster les sections selon vos besoins spécifiques.
-
-Code similaire trouvé avec 1 type de licence
