@@ -303,9 +303,7 @@ export default function CandidateDetailsPage({
                     {candidat.notes.map((note) => (
                       <div
                         key={note.typeNote.id}
-                        className={`bg-secondary/20 p-2 rounded ${getNoteColor(
-                          note.note ?? 0
-                        )}`}
+                        className={`bg-secondary/20 p-2 rounded `}
                       >
                         <Badge
                           className={`${getNoteColor(note.note)} px-3 py-1`}
