@@ -79,7 +79,7 @@ export default function Home() {
   };
 
   return (
-    <div className="h-full flex items-center justify-center bg-gradient-to-b from-background to-muted p-4">
+    <div className="h-full flex items-center justify-center from-background to-muted p-4 rounded-md">
       <Card className="w-full max-w-2xl shadow-xl border-t-4 border-t-primary">
         <CardHeader className="bg-card border-b">
           <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">

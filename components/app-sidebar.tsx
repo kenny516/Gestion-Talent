@@ -1,17 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  BookOpen,
-  Bot,
-  BotMessageSquare,
-  Frame,
-  Map,
-  PieChart,
-  Save,
-  Settings2,
-  User,
-} from "lucide-react";
+import { BookOpen, BotMessageSquare, Save, User } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";

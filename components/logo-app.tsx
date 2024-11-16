@@ -20,7 +20,7 @@ export function LogoApp({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <Link href="#">
+          <Link href="/back-office/">
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
