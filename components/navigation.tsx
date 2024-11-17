@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {  Menu, Bot, HandCoins, UserCircle2 } from "lucide-react";
+import { Menu, Bot, HandCoins, UserCircle2, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import { ModeToggle } from "./theme/toggel";
@@ -25,12 +25,13 @@ const routes = [
     title: "Liste offre",
     href: "/front-office/offre",
     icon: HandCoins,
-    submenu: [
-      {
-        title: "",
-        href: "",
-      },
-    ],
+    submenu: [], // Sous-menu vide
+  },
+  {
+    title: "Notification",
+    href: "/front-office/notification",
+    icon: Bell,
+    submenu: [], // Sous-menu vide
   },
 ];
 
@@ -39,12 +40,12 @@ export function Navigation() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="border-b w-full  bg-background z-30">
+    <nav className="border-b w-full bg-background z-30">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/front-office/" className="text-xl font-bold flex gap-4 justify-center items-center">
-            <UserCircle2 className="h-8 w-8" />
+              <UserCircle2 className="h-8 w-8" />
               RH-FRONT
             </Link>
           </div>
@@ -66,22 +67,24 @@ export function Navigation() {
                     <span>{route.title}</span>
                   </Link>
                 </Button>
-                <div className="absolute z-50 left-0 hidden pt-2 group-hover:block">
-                  <div className="w-48 rounded-md border bg-popover p-2 shadow-md flex justify-center">
-                    {route.submenu.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={cn(
-                          "block rounded-sm px-3 py-2 text-sm hover:bg-accent",
-                          pathname === item.href && "bg-accent"
-                        )}
-                      >
-                        {item.title}
-                      </Link>
-                    ))}
+                {route.submenu.length > 0 && (
+                  <div className="absolute z-50 left-0 hidden pt-2 group-hover:block">
+                    <div className="w-48 rounded-md border bg-popover p-2 shadow-md flex justify-center">
+                      {route.submenu.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={cn(
+                            "block rounded-sm px-3 py-2 text-sm hover:bg-accent",
+                            pathname === item.href && "bg-accent"
+                          )}
+                        >
+                          {item.title}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
@@ -110,29 +113,31 @@ export function Navigation() {
                         {route.title}
                       </Link>
                     </Button>
-                    <div className="pl-6 space-y-1">
-                      {route.submenu.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setOpen(false)}
-                          className={cn(
-                            "block rounded-sm px-3 py-2 text-sm hover:bg-accent",
-                            pathname === item.href && "bg-accent"
-                          )}
-                        >
-                          {item.title}
-                        </Link>
-                      ))}
-                    </div>
+                    {route.submenu.length > 0 && (
+                      <div className="pl-6 space-y-1">
+                        {route.submenu.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setOpen(false)}
+                            className={cn(
+                              "block rounded-sm px-3 py-2 text-sm hover:bg-accent",
+                              pathname === item.href && "bg-accent"
+                            )}
+                          >
+                            {item.title}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </nav>
             </SheetContent>
           </Sheet>
           <div>
-          <ModeToggle />
-        </div>
+            <ModeToggle />
+          </div>
         </div>
       </div>
     </nav>

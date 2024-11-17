@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale"; // Importer la locale française

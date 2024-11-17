@@ -41,7 +41,7 @@ const defaultCandidat: CandidaturData = {
   competences: [],
   notes: [],
   status: "En attente",
-  progress: 50,
+  progress: 100,
 };
 
 export default function CandidateDetailsPage({

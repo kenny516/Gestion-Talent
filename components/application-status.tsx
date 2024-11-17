@@ -22,11 +22,9 @@ import { api_url, Candidat, suivie, TypeNote } from "@/types";
 import {
   ArrowRight,
   Briefcase,
-  Building2,
   CheckCircle2,
   Loader2,
   User2,
-  Calendar,
 } from "lucide-react";
 import { getStatusColor } from "./ui/code-color";
 
@@ -47,7 +45,7 @@ const fetchNotifications = async (
     const response = await axios.get(`${api_url}candidat/${idCandidat}`);
     return response.data as suivie;
   } catch (error) {
-    console.error("Erreur lors de la récupération des notifications:", error);
+    console.error("Erreur lors de la récupération:", error);
     return null;
   }
 };
@@ -57,7 +55,7 @@ const fetchTypenote = async (): Promise<TypeNote[]> => {
     const response = await axios.get(`${api_url}type_note`);
     return response.data as TypeNote[];
   } catch (error) {
-    console.error("Erreur lors de la récupération des notifications:", error);
+    console.error("Erreur lors de la récupération:", error);
     return [];
   }
 };
@@ -226,7 +224,7 @@ export function ApplicationStatus() {
                   </span>
                   {index < typeNote.length - 1 && (
                     <ArrowRight
-                      className={`absolute -right-3 top-7 w-6 h-6 transition-all duration-500
+                      className={`absolute -right-3 top-4 w-6 h-6 transition-all duration-500
                         ${
                           index < suivie.currentStep - 1
                             ? "text-primary opacity-100"
