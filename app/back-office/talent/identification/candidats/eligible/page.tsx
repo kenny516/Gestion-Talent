@@ -8,7 +8,7 @@ import CandidatTable from "../(component)/candidat-table";
 // Fetch candidates
 const fetchCandidates = async (): Promise<Candidat[]> => {
   try {
-    const response = await axios.get(api_url + "candidat");
+    const response = await axios.get(api_url + "candidat/elligibles");
     return response.data as Candidat[];
   } catch (error) {
     console.error("Error fetching candidates:", error);

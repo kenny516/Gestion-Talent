@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Gestion des Talents
 
-First, run the development server:
+Ce projet est une application de gestion des talents construite avec [Next.js](https://nextjs.org). Elle permet de gérer les candidats, les employés, et les postes au sein d'une entreprise.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📂 Structure du Projet
+
+```
+.env
+.eslintrc.json
+.gitignore
+.next/
+app/
+  ├── back-office/
+  ├── front-office/
+  ├── auth/
+components/
+hooks/
+lib/
+public/
+types/
+middleware.ts
+next-env.d.ts
+next.config.ts
+package.json
+postcss.config.mjs
+README.md
+sortie.json
+tailwind.config.ts
+tsconfig.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 📁 Dossiers Principaux
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **app/** : Contient les pages et les composants spécifiques à chaque page.
+  - **back-office/** : Pages pour la gestion des talents (candidats, employés, postes).
+  - **front-office/** : Pages pour l'affichage public.
+  - **auth/** : Pages pour l'authentification (login, register).
+- **components/** : Composants réutilisables dans l'application.
+- **hooks/** : Hooks personnalisés.
+- **lib/** : Fonctions utilitaires et configurations.
+- **public/** : Fichiers statiques.
+- **types/** : Types TypeScript utilisés dans l'application.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Fonctionnalités
 
-## Learn More
+### Identification des Talents
 
-To learn more about Next.js, take a look at the following resources:
+- **Affichage** :
+  - Liste des candidats qui ont postulé.
+  - Détails pour chaque candidat.
+  - Liste des employés actuels, avec leurs compétences.
+- **Formulaire** :
+  - Saisie pour le poste et ses détails.
+- **Affichage** :
+  - Profils des employés possédant les compétences requises et sélection pour promotion.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Acquisition des Talents
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Affichage** :
+  - Page affichant le proforma : annonce listant les besoins.
+- **Formulaire** :
+  - Saisie des candidatures.
 
-## Deploy on Vercel
+### Développement des Talents
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Formulaire** :
+  - Insertion des notes des candidats, avec option pour choisir entre entretien ou test.
+  - Insertion du candidat retenu pour travailler.
+- **Affichage** :
+  - Candidats sélectionnés pour le test.
+  - Liste des candidats après entretien avec notes.
+  - Liste des candidats retenus pour travailler.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Installation
+
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/kenny516/Gestion-Talent.git
+   cd gestion_talent
+   ```
+
+2. Installez les dépendances :
+   ```bash
+   npm install
+   ```
+
+3. Créez un fichier 
+
+.env
+
+ à la racine du projet et configurez les variables d'environnement nécessaires.
+
+4. Démarrez le serveur de développement :
+   ```bash
+   npm run dev
+   ```
+
+5. Ouvrez [http://localhost:3000](http://localhost:3000) avec votre navigateur pour voir le résultat.
+
+## 🌐 Déploiement
+
+Le moyen le plus simple de déployer votre application Next.js est d'utiliser la [plateforme Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) des créateurs de Next.js.
+
+Consultez notre [documentation de déploiement Next.js](https://nextjs.org/docs/app/building-your-application/deploying) pour plus de détails.
+
+## 📚 Apprendre Plus
+
+Pour en savoir plus sur Next.js, consultez les ressources suivantes :
+
+- [Documentation Next.js](https://nextjs.org/docs) - Apprenez les fonctionnalités et l'API de Next.js.
+- [Apprendre Next.js](https://nextjs.org/learn) - Un tutoriel interactif Next.js.
+
+## 🤝 Contribuer
+
+Les contributions sont les bienvenues ! Veuillez consulter le fichier CONTRIBUTING.md pour plus d'informations.
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus d'informations.
+
+---

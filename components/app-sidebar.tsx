@@ -1,16 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  BookOpen,
-  Bot,
-  Frame,
-  Map,
-  PieChart,
-  Save,
-  Settings2,
-  User,
-} from "lucide-react";
+import { BookOpen, BotMessageSquare, Save, User } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
@@ -38,9 +29,22 @@ const data = {
       icon: User,
       isActive: true,
       items: [
-        { title: "Internal Search", url: "/back-office/talent/identification/search" },
-        { title: "candidat", url: "/back-office/talent/identification/candidats" },
-        { title: "employe", url: "/back-office/talent/identification/employees" },
+        {
+          title: "Internal Search",
+          url: "/back-office/talent/identification/search",
+        },
+        {
+          title: "candidat",
+          url: "/back-office/talent/identification/candidats",
+        },
+        {
+          title: "eligible",
+          url: "/back-office/talent/identification/candidats/eligible",
+        },
+        {
+          title: "employe",
+          url: "/back-office/talent/identification/employees",
+        },
         { title: "poste", url: "/back-office/talent/identification/postes" },
       ],
     },
@@ -49,9 +53,18 @@ const data = {
       url: "/back-office/talent/acquisition",
       icon: Save,
       items: [
-        { title: "Job Posting", url: "/back-office/talent/acquisition/posting" },
-        { title: "Application Form", url: "/back-office/talent/acquisition/apply" },
-        { title: "Offre Embauche", url: "/back-office/talent/acquisition/offreEmbauche" },
+        {
+          title: "Job Posting",
+          url: "/back-office/talent/acquisition/posting",
+        },
+        {
+          title: "Application Form",
+          url: "/back-office/talent/acquisition/apply",
+        },
+        {
+          title: "Offre Embauche",
+          url: "/back-office/talent/acquisition/offreEmbauche",
+        },
       ],
     },
     {
@@ -63,24 +76,15 @@ const data = {
         { title: "Filter", url: "/back-office/talent/development/filter" },
         { title: "Contract", url: "/back-office/talent/development/contract" },
         { title: "note", url: "/back-office/talent/development/note" },
+        { title: "suivie", url: "/back-office/talent/development/suivie" },
       ],
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Ai",
+      url: "/back-office/chat/",
+      icon: BotMessageSquare,
     },
   ],
 };

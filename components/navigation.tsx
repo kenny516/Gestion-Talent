@@ -4,45 +4,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Users, UserPlus, GraduationCap, Menu } from "lucide-react";
+import {  Menu, Bot, HandCoins, UserCircle2 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
+import { ModeToggle } from "./theme/toggel";
 
 const routes = [
   {
-    title: "Identification",
-    href: "/talent/identification",
-    icon: Users,
+    title: "Assistant",
+    href: "/front-office/chat",
+    icon: Bot,
     submenu: [
       {
-        title: "Profile Requirements",
-        href: "/talent/identification/requirements",
+        title: "Chat assistant",
+        href: "/front-office/chat",
       },
-      { title: "Internal Search", href: "/talent/identification/search" },
-      { title: "candidat", href: "/talent/identification/candidats" },
-      { title: "employe", href: "/talent/identification/employees" },
-      { title: "poste", href: "/talent/identification/postes" },
     ],
   },
   {
-    title: "Acquisition",
-    href: "/talent/acquisition",
-    icon: UserPlus,
+    title: "Liste offre",
+    href: "/front-office/offre",
+    icon: HandCoins,
     submenu: [
-      { title: "Job Posting", href: "/talent/acquisition/posting" },
-      { title: "Application Form", href: "/talent/acquisition/apply" },
-      { title: "Offre Embauche", href: "/talent/acquisition/offreEmbauche" },
-    ],
-  },
-  {
-    title: "Development",
-    href: "/talent/development",
-    icon: GraduationCap,
-    submenu: [
-      { title: "Evaluate", href: "/talent/development/evaluate" },
-      { title: "Filter", href: "/talent/development/filter" },
-      { title: "Contract", href: "/talent/development/contract" },
-      { title: "note", href: "/talent/development/note" },
+      {
+        title: "",
+        href: "",
+      },
     ],
   },
 ];
@@ -52,12 +39,13 @@ export function Navigation() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="border-b">
+    <nav className="border-b w-full  bg-background z-30">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold">
-              TMS
+            <Link href="/front-office/" className="text-xl font-bold flex gap-4 justify-center items-center">
+            <UserCircle2 className="h-8 w-8" />
+              RH-FRONT
             </Link>
           </div>
 
@@ -78,8 +66,8 @@ export function Navigation() {
                     <span>{route.title}</span>
                   </Link>
                 </Button>
-                <div className="absolute left-0 hidden pt-2 group-hover:block">
-                  <div className="w-48 rounded-md border bg-popover p-2 shadow-md">
+                <div className="absolute z-50 left-0 hidden pt-2 group-hover:block">
+                  <div className="w-48 rounded-md border bg-popover p-2 shadow-md flex justify-center">
                     {route.submenu.map((item) => (
                       <Link
                         key={item.href}
@@ -142,6 +130,9 @@ export function Navigation() {
               </nav>
             </SheetContent>
           </Sheet>
+          <div>
+          <ModeToggle />
+        </div>
         </div>
       </div>
     </nav>

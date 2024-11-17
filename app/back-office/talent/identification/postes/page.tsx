@@ -68,7 +68,7 @@ export default function PostesPage() {
       <CardHeader className="border-b border-border">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/back-office/talent/identification/candidats/new">
+              <Link href="/back-office/talent/identification/postes/new">
                 <Button
                   className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2"
                   size="sm"
@@ -102,7 +102,7 @@ export default function PostesPage() {
                 <TableHead>Titre</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Département</TableHead>
-                <TableHead>Actions</TableHead>
+                {/*}<TableHead>Actions</TableHead>{*/}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -114,13 +114,13 @@ export default function PostesPage() {
                     <TableCell>{poste.titre}</TableCell>
                     <TableCell>{poste.description}</TableCell>
                     <TableCell>{poste.departement}</TableCell>
-                    <TableCell>
+                    {/*}<TableCell>
                       <Link href={`/back-office/postes/${poste.id}`}>
                         <Button variant="outline" size="sm">
                           Voir détails
                         </Button>
                       </Link>
-                    </TableCell>
+                    </TableCell>{*/}
                   </TableRow>
                 ))
               )}

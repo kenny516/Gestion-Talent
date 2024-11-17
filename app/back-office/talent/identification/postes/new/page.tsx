@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 const positionSchema = z.object({
   titre: z.string().min(1, { message: "Le titre est requis" }),
@@ -94,10 +95,17 @@ const CreatePosition = () => {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Création de poste"
-        description="Créer un nouveau poste"
-      />
+      <div className="flex justify-between items-center">
+        <PageHeader
+          title="Création de poste"
+          description="Créer un nouveau poste"
+        />
+        <Link href={`/back-office/talent/identification/postes`}>
+          <Button variant="outline" size="sm">
+            ← Retour à la liste
+          </Button>
+        </Link>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>Créer un nouveau poste</CardTitle>

@@ -13,7 +13,7 @@ import Link from "next/link";
 import { api_url, Employe } from "@/types";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
-import { Plus, Search } from "lucide-react";
+import {  Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 
@@ -68,7 +68,7 @@ export default function EmployeesPage() {
       <Card className="bg-card text-card-foreground shadow">
         <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
+          {/*}<div className="flex items-center gap-4">
               <Link href={`/talent/identification/employees/new`}>
                 <Button
                   className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2"
@@ -78,7 +78,7 @@ export default function EmployeesPage() {
                   Nouvel employé
                 </Button>
               </Link>
-            </div>
+            </div>{*/}
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -107,7 +107,6 @@ export default function EmployeesPage() {
                   <TableHead>Poste</TableHead>
                   <TableHead>Departement</TableHead>
                   <TableHead>Compétences</TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -131,15 +130,6 @@ export default function EmployeesPage() {
                               <div key={comp.id}>{comp.nom}</div>
                             ))
                           : "Aucune compétence"}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Link href={`employees/${employe.id}`}>
-                            <Button variant="outline" size="sm">
-                              Voir détails
-                            </Button>
-                          </Link>
-                        </div>
                       </TableCell>
                     </TableRow>
                   ))
