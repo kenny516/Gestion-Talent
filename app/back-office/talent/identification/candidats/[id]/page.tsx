@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { api_url, CandidaturData } from "@/types";
+import { api_url, CandidatDetail } from "@/types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
@@ -24,25 +24,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Default candidate data
-const defaultCandidat: CandidaturData = {
-  id: 0,
-  nom: "Non trouvé",
-  prenom: "Inconnu",
-  email: "non.trouve@email.com",
-  telephone: "0000000000",
-  dateCandidature: "00000000",
-  poste: {
-    id: 0,
-    titre: "Non spécifié",
-    description: "Aucune description disponible.",
-    departement: "Non spécifié",
-  },
-  competences: [],
-  notes: [],
-  status: "En attente",
-  progress: 100,
-};
 
 export default function CandidateDetailsPage({
   params,
@@ -50,7 +31,7 @@ export default function CandidateDetailsPage({
   params: { id: string };
 }) {
   const { toast } = useToast();
-  const [candidat, setCandidat] = useState<CandidaturData>(defaultCandidat);
+  const [candidat, setCandidat] = useState<CandidatDetail|null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [id, setId] = useState<string | null>(null);
 
@@ -71,12 +52,11 @@ export default function CandidateDetailsPage({
       try {
         setLoading(true);
         const response = await axios.get(api_url + `candidat/${id}`);
-        const data: CandidaturData = response.data;
+        const data: CandidatDetail = response.data;
         console.log(data);
         setCandidat(data);
       } catch (error) {
         console.error(error);
-        setCandidat(defaultCandidat); // Set to default if error occurs
       } finally {
         setLoading(false);
       }
@@ -222,7 +202,7 @@ export default function CandidateDetailsPage({
                     Date de candidature
                   </p>
                   <p className="font-medium">
-                    {new Date(candidat?.dateCandidature).toLocaleDateString(
+                    {new Date(candidat?.postulations[0].datePostulation+"").toLocaleDateString(
                       "fr-FR"
                     )}
                   </p>
@@ -232,13 +212,13 @@ export default function CandidateDetailsPage({
               <div className="pt-4">
                 <Badge
                   className={`${getStatusColor(
-                    candidat?.status || "En attente"
+                    candidat?.postulations[0].status || "En attente"
                   )} px-3 py-1`}
                 >
-                  {candidat?.status}
+                  {candidat?.postulations[0].status}
                 </Badge>
               </div>
-              {candidat?.progress === 100 && candidat?.status != "Embauché" ? (
+              {candidat?.progress === 100 && candidat?.postulations[0].status != "Embauché" ? (
                 <Button onClick={embaucher}>Embauche le candidat</Button>
               ) : null}
             </div>
@@ -257,12 +237,12 @@ export default function CandidateDetailsPage({
             <div className="space-y-4">
               <div className="bg-primary/5 p-4 rounded-lg">
                 <h3 className="text-xl font-semibold">
-                  {candidat?.poste.titre}
+                  {candidat?.postulations[0].poste.titre}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Département: {candidat?.poste.departement}
+                  Département: {candidat?.postulations[0].poste.departement}
                 </p>
-                <p className="mt-4">{candidat?.poste.description}</p>
+                <p className="mt-4">{candidat?.postulations[0].poste.description}</p>
               </div>
 
               {/* Compétences Section */}
@@ -271,7 +251,7 @@ export default function CandidateDetailsPage({
                   <Award className="h-4 w-4" />
                   Compétences
                 </h4>
-                {candidat?.competences.length > 0 ? (
+                {candidat?.competences.length|| 0  > 0 ? (
                   <div className="space-y-2">
                     {candidat?.competences.map((comp) => (
                       <div
@@ -297,9 +277,9 @@ export default function CandidateDetailsPage({
                   <ClipboardList className="h-4 w-4" />
                   Notes
                 </h4>
-                {candidat.notes.length > 0 ? (
+                {candidat?.notes.length || 0 > 0 ? (
                   <div className="space-y-2">
-                    {candidat.notes.map((note) => (
+                    {candidat?.notes.map((note) => (
                       <div
                         key={note.typeNote.id}
                         className={`bg-secondary/20 p-2 rounded `}

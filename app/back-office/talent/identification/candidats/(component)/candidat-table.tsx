@@ -9,11 +9,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Candidat } from "@/types";
 import { PageHeader } from "@/components/page-header";
+import { Badge } from "@/components/ui/badge";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
+import { getStatusColor } from "@/components/ui/code-color";
 import { Plus, Search } from "lucide-react";
 
 const CandidatTable = ({
@@ -27,15 +36,25 @@ const CandidatTable = ({
   candidats: Candidat[];
   loading: boolean;
 }) => {
+  const [selectedStatus, setSelectedStatus] = useState<
+    "En attente" | "Retenu" | "Refusé" | "Tous"
+  >("Tous");
   const [posteSearch, setPosteSearch] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
-  const filteredEmployees = candidats.filter((candidat) =>
-    candidat.prenom?.toLowerCase().includes(posteSearch.toLowerCase())
-  );
 
-  const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
-  const paginatedCandidates = filteredEmployees.slice(
+  const filteredCandidates = candidats.filter((candidate) => {
+    const firstPostulation = candidate.postulations?.[0];
+    return (
+      (selectedStatus === "Tous" || firstPostulation?.status === selectedStatus) &&
+      firstPostulation?.poste?.departement
+        ?.toLowerCase()
+        .includes(posteSearch.toLowerCase())
+    );
+  });
+
+  const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage);
+  const paginatedCandidates = filteredCandidates.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -47,15 +66,25 @@ const CandidatTable = ({
         <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/back-office/talent/identification/candidats/new">
-                <Button
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2"
-                  size="sm"
-                >
-                  <Plus className="h-4 w-4" />
-                  Nouveau candidat
-                </Button>
-              </Link>
+
+              <Select
+                value={selectedStatus}
+                onValueChange={(value) =>
+                  setSelectedStatus(
+                    value as "En attente" | "Retenu" | "Refusé" | "Tous"
+                  )
+                }
+              >
+                <SelectTrigger className="w-40 bg-background border-input">
+                  <SelectValue placeholder="Filtrer par status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Tous">Tous</SelectItem>
+                  <SelectItem value="En attente">En attente</SelectItem>
+                  <SelectItem value="Retenu">Retenu</SelectItem>
+                  <SelectItem value="Refusé">Refusé</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="relative w-full sm:w-64">
@@ -92,6 +121,15 @@ const CandidatTable = ({
                     Téléphone
                   </TableHead>
                   <TableHead className="font-semibold text-muted-foreground">
+                    Date de candidature
+                  </TableHead>
+                  <TableHead className="font-semibold text-muted-foreground">
+                    Poste
+                  </TableHead>
+                  <TableHead className="font-semibold text-muted-foreground">
+                    Status
+                  </TableHead>
+                  <TableHead className="font-semibold text-muted-foreground">
                     Actions
                   </TableHead>
                 </TableRow>
@@ -113,6 +151,20 @@ const CandidatTable = ({
                         {candidate.email}
                       </TableCell>
                       <TableCell>{candidate.telephone || "N/A"}</TableCell>
+                      <TableCell>{candidate.postulations[0].datePostulation+""}</TableCell>
+                      <TableCell>
+                        {candidate.postulations[0].poste?.departement || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={`${getStatusColor(
+                            candidate.postulations[0].status || "En attente"
+                          )}`}
+                        >
+                          {candidate.postulations[0].status || "En attente"}
+                        </Badge>
+                      </TableCell>
                       <TableCell>
                         <Link
                           href={`/back-office/talent/identification/candidats/${candidate.id}`}

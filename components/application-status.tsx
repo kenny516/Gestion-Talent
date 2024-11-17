@@ -38,7 +38,7 @@ const fetchCandidates = async (): Promise<Candidat[]> => {
   }
 };
 
-const fetchNotifications = async (
+const fetchCandidatDetail = async (
   idCandidat: number
 ): Promise<suivie | null> => {
   try {
@@ -87,7 +87,7 @@ export function ApplicationStatus() {
     if (idCandidate !== null) {
       const loadSuivie = async () => {
         setLoading(true);
-        const data = await fetchNotifications(idCandidate);
+        const data = await fetchCandidatDetail(idCandidate);
         setSuivie(data);
         setLoading(false);
       };
@@ -154,20 +154,21 @@ export function ApplicationStatus() {
                   </div>
                   <div className="flex flex-col">
                     <span className="font-semibold text-primary text-lg">
-                      {suivie.poste?.titre || "Non spécifié"}
+                      {suivie.postulations[0].poste?.titre || "Non spécifié"}
                     </span>
                     <span className="text-sm text-muted-foreground">
-                      {suivie.poste?.departement || "Non spécifié"}
+                      {suivie.postulations[0].poste?.departement ||
+                        "Non spécifié"}
                     </span>
                   </div>
                 </span>
                 <Badge
                   variant="outline"
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-transform duration-300 group-hover:scale-105 ${getStatusColor(
-                    suivie.status || "En attente"
+                    suivie.postulations[0].status || "En attente"
                   )}`}
                 >
-                  {suivie.status}
+                  {suivie.postulations[0].status}
                 </Badge>
               </div>
             </div>

@@ -15,9 +15,21 @@ export type Candidat = {
   prenom: string;
   email: string;
   telephone?: string;
-  dateCandidature: string;
-  poste: Poste;
-  status?: "En attente" | "Retenu" | "Refusé" | "Embauché";
+  postulations: [
+    {
+      id: 1;
+      candidat: null;
+      poste: {
+        id: number;
+        titre: string;
+        description: string;
+        departement: string;
+      };
+      status: "En attente" | "Retenu" | "Refusé" | "Embauché";
+      datePostulation: string;
+    }
+  ];
+
 };
 
 export type TypeNote = {
@@ -86,7 +98,7 @@ export type CompetencesEmployes = Competence & {
 
 export type CompetencesCandidats = Competence & {
   candidat_id: number;
-  niveau: 0|1 | 2 | 3 | 4 | 5;
+  niveau: 0 | 1 | 2 | 3 | 4 | 5;
 };
 export type NotificationType = {
   id: number;
@@ -136,20 +148,33 @@ export type CandidaturData = {
   notes: NoteCandidat[];
   progress: number;
 };
-export type CandidatDetail ={
-    id: number;
-    nom: string;
-    prenom: string;
-    email: string;
-    telephone: string;
-    formations: Formation[];
-    experiences: Experience[];
-    diplomes: Diplome[];
-    notes: NoteCandidat[];
-    competences: CompetencesCandidats[];
-    status: "En attente" | "Retenu" | "Refusé" | "Embauché";
-    progress: number;
-}
+export type CandidatDetail = {
+  id: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  formations: Formation[];
+  experiences: Experience[];
+  diplomes: Diplome[];
+  notes: NoteCandidat[];
+  competences: CompetencesCandidats[];
+  postulations: [
+    {
+      id: 1;
+      candidat: null;
+      poste: {
+        id: number;
+        titre: string;
+        description: string;
+        departement: string;
+      };
+      status: "En attente" | "Retenu" | "Refusé" | "Embauché";
+      datePostulation: string;
+    }
+  ];
+  progress: number;
+};
 export type PosteCompetenceData = {
   poste: Poste;
   competence: CompetencesEmployes[];
@@ -157,9 +182,21 @@ export type PosteCompetenceData = {
 
 export type suivie = {
   id: number;
-  status: "En attente" | "Retenu" | "Refusé";
   progress: number;
-  poste: Poste;
+  postulations: [
+    {
+      id: 1;
+      candidat: null;
+      poste: {
+        id: number;
+        titre: string;
+        description: string;
+        departement: string;
+      };
+      status: "En attente" | "Retenu" | "Refusé" | "Embauché";
+      datePostulation: string;
+    }
+  ];
   notes: NoteCandidat[];
   currentStep: number;
 };

@@ -27,6 +27,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto">
@@ -40,7 +41,9 @@ export default function RootLayout({
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="/back-office/">RH applicait</BreadcrumbLink>
+                      <BreadcrumbLink href="/back-office/">
+                        RH applicait
+                      </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>

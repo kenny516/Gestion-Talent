@@ -13,14 +13,63 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Loader2 } from "lucide-react";
 import { continueConversation, Message } from "@/app/api/chat/route";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
+import axios from "axios";
+import { api_url } from "@/types";
 
 export const maxDuration = 30;
 
+const messageInfoCandidat = (candidatInfo: string) => {
+  const newMessage: Message = { role: "user", content: candidatInfo };
+  return newMessage;
+};
+
+const geDetailCandidat = async (id: number) => {
+  try {
+    const response = await axios.get(`${api_url}candidat/${id}`);
+    console.log(response.data);
+    return JSON.stringify(response.data);
+  } catch (error) {
+    console.error(error);
+    return "";
+  }
+};
+
+function useCheckSessionId() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const candidatId = sessionStorage.getItem("candidat_id");
+
+    if (!candidatId) {
+      router.push("/auth/login");
+    }
+  }, [router]);
+  return null;
+}
+
 export default function Home() {
+  useCheckSessionId();
   const [conversation, setConversation] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [candidat, setCandidat] = useState<number>(() => {
+    const savedCandidatId = sessionStorage.getItem("candidat_id");
+    return savedCandidatId ? Number(savedCandidatId) : 0;
+  });
+  const [candidatDetails, setCandidatDetails] = useState<string>("");
+
+  // Fetching the candidat details when `candidat` state is set
+  useEffect(() => {
+    const fetchData = async () => {
+      if (candidat) {
+        const details = await geDetailCandidat(candidat);
+        setCandidatDetails(messageInfoCandidat(details));
+      }
+    };
+    fetchData();
+  }, [candidat]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

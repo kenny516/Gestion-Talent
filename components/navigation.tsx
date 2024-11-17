@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Menu, Bot, HandCoins, UserCircle2, Bell } from "lucide-react";
+import { Menu, Bot, HandCoins, UserCircle2, Bell, BookPlus } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import { ModeToggle } from "./theme/toggel";
@@ -28,6 +28,12 @@ const routes = [
     submenu: [], // Sous-menu vide
   },
   {
+    title: "Postuler",
+    href: "/front-office/postuler",
+    icon: BookPlus,
+    submenu: [], // Sous-menu vide
+  },
+  {
     title: "Notification",
     href: "/front-office/notification",
     icon: Bell,
@@ -36,6 +42,7 @@ const routes = [
 ];
 
 export function Navigation() {
+    
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
