@@ -24,6 +24,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { api_url } from "@/types";
+import { useToast } from "@/hooks/use-toast";
 
 // Define Zod schema for validation
 const loginSchema = z.object({
@@ -38,8 +41,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { toast } = useToast();
 
-  // Set up useForm with Zod resolver for validation
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -53,15 +56,17 @@ export function LoginForm() {
     setError("");
 
     try {
-      // Simulate a login process with a 2-second delay (replace with your actual login logic)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // In a real app, here you would call the API for authentication
-      // e.g. await axios.post('/api/login', data)
-
-      console.log("User data:", data);
+      const response = await axios.post(api_url + "/login", data);
+      toast({
+        variant: "default",
+        title: "Connexion réussie",
+      });
     } catch (err) {
-      setError("Une erreur est survenue lors de la connexion.");
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la connexion.",
+      });
     } finally {
       setIsLoading(false);
     }

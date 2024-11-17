@@ -1,6 +1,6 @@
 import { ApplicationStatus } from "@/components/application-status";
 import React from "react";
 
-export default function suivie() {
+export default function Suivie() {
   return <ApplicationStatus />;
 }

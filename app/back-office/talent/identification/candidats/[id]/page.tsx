@@ -41,7 +41,7 @@ const defaultCandidat: CandidaturData = {
   competences: [],
   notes: [],
   status: "En attente",
-  isEligible: false,
+  progress: 50,
 };
 
 export default function CandidateDetailsPage({
@@ -86,10 +86,9 @@ export default function CandidateDetailsPage({
 
   // Function to handle candidate hiring
   const embaucher = async () => {
-    if (!candidat?.id) return; // Ensure the candidate exists
-    alert(`Candidat ${candidat?.prenom} ${candidat?.nom} embauché!`);
+    if (!candidat?.id) return;
     try {
-      await axios.get(api_url + `/${candidat?.id}`);
+      await axios.post(api_url + `candidat/embaucher/${candidat?.id}`);
       toast({
         variant: "default",
         title: "Success",
@@ -239,7 +238,7 @@ export default function CandidateDetailsPage({
                   {candidat?.status}
                 </Badge>
               </div>
-              {candidat?.isEligible ? (
+              {candidat?.progress === 100 && candidat?.status != "Embauché" ? (
                 <Button onClick={embaucher}>Embauche le candidat</Button>
               ) : null}
             </div>

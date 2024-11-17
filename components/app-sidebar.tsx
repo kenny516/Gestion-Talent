@@ -38,6 +38,10 @@ const data = {
           url: "/back-office/talent/identification/candidats",
         },
         {
+          title: "eligible",
+          url: "/back-office/talent/identification/candidats/eligible",
+        },
+        {
           title: "employe",
           url: "/back-office/talent/identification/employees",
         },
@@ -72,6 +76,7 @@ const data = {
         { title: "Filter", url: "/back-office/talent/development/filter" },
         { title: "Contract", url: "/back-office/talent/development/contract" },
         { title: "note", url: "/back-office/talent/development/note" },
+        { title: "suivie", url: "/back-office/talent/development/suivie" },
       ],
     },
   ],

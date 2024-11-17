@@ -13,7 +13,7 @@ import Link from "next/link";
 import { api_url, Employe } from "@/types";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
-import { Plus, Search } from "lucide-react";
+import {  Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 
@@ -107,7 +107,6 @@ export default function EmployeesPage() {
                   <TableHead>Poste</TableHead>
                   <TableHead>Departement</TableHead>
                   <TableHead>Compétences</TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -131,15 +130,6 @@ export default function EmployeesPage() {
                               <div key={comp.id}>{comp.nom}</div>
                             ))
                           : "Aucune compétence"}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Link href={`employees/${employe.id}`}>
-                            <Button variant="outline" size="sm">
-                              Voir détails
-                            </Button>
-                          </Link>
-                        </div>
                       </TableCell>
                     </TableRow>
                   ))
