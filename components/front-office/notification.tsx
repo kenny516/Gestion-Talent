@@ -3,62 +3,55 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale"; // Importer la locale française
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import axios from "axios";
-import { useToast } from "@/hooks/use-toast";
 import { api_url, NotificationType } from "@/types";
 
-
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
-  const [lastFetchedId, setLastFetchedId] = useState<number | null>(null);
-  const { toast } = useToast();
+  const [pastNotifications, setPastNotifications] = useState<NotificationType[]>([]);
+  const [newNotifications, setNewNotifications] = useState<NotificationType[]>([]);
 
-  // Fonction pour récupérer les notifications
-  const fetchNotifications = async () => {
+  // Fetch past notifications
+  const fetchPastNotifs = async () => {
     try {
-      const response = await axios.get(api_url+`candidat/${0}/notification`); // Remplacez par votre endpoint API
-      const data: NotificationType[] = await response.data;
+      const response = await axios.get(api_url + `candidat/1/notification/read`);
+      const data: NotificationType[] = response.data;
 
-      // Trier les notifications du plus récent au plus ancien
+      // Sort notifications by date (latest first)
       const sortedNotifications = [...data].sort(
         (a, b) =>
           new Date(b.dateHeure).getTime() - new Date(a.dateHeure).getTime()
       );
 
-      // Détecter les nouvelles notifications
-      const newNotifications = sortedNotifications.filter(
-        (notification) => !lastFetchedId || notification.id > lastFetchedId
-      );
-
-      if (newNotifications.length > 0) {
-        // Afficher un toast pour chaque nouvelle notification
-        newNotifications.forEach((notification) =>
-          toast({
-            variant: "default",
-            title: "Nouvelle notification",
-            description: notification.message,
-          })
-        );
-
-        // Mettre à jour l'ID de la dernière notification récupérée
-        setLastFetchedId(newNotifications[0].id);
-      }
-
-      setNotifications(sortedNotifications);
+      setPastNotifications(sortedNotifications);
     } catch (error) {
-      console.error(
-        "Erreur lors de la récupération des notifications :",
-        error
-      );
+      console.error("Erreur lors de la récupération des notifications passées :", error);
     }
   };
 
-  // Fetch périodique toutes les 10 secondes
+  // Fetch new notifications
+  const fetchNewNotifs = async () => {
+    try {
+      const response = await axios.get(api_url + `candidat/1/notification/non-read`);
+      const data: NotificationType[] = response.data;
+
+      // Add new notifications to the state, ensuring no duplicates
+      setNewNotifications((prevNewNotifications) => {
+        const existingIds = new Set(prevNewNotifications.map((notif) => notif.id));
+        const filteredNew = data.filter((notif) => !existingIds.has(notif.id));
+        return [...filteredNew, ...prevNewNotifications];
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des nouvelles notifications :", error);
+    }
+  };
+
+  // Fetch notifications on initial load
   useEffect(() => {
-    fetchNotifications(); // Fetch initial
-    const interval = setInterval(fetchNotifications, 10000); // 10 secondes
-    return () => clearInterval(interval); // Nettoyage
+    fetchPastNotifs(); // Fetch past notifications
+    fetchNewNotifs();  // Initial fetch for new notifications
+    const interval = setInterval(fetchNewNotifs, 10000); // Fetch new notifications every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
   return (
@@ -68,26 +61,49 @@ export default function NotificationsPage() {
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[calc(100vh-200px)] pr-4">
-          {notifications.map((notification) => (
-            <div key={notification.id} className="mb-4 last:mb-0">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <Badge variant="secondary">
-                      {notification.destinataire}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(parseISO(notification.dateHeure), {
-                        addSuffix: true,
-                        locale: fr,
-                      })}
-                    </span>
-                  </div>
-                  <p className="text-sm">{notification.message}</p>
-                </CardContent>
-              </Card>
+          {newNotifications.length > 0 && (
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-2">Nouvelles Notifications</h2>
+              {newNotifications.map((notification) => (
+                <div key={notification.id} className="mb-4 last:mb-0">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(parseISO(notification.dateHeure), {
+                            addSuffix: true,
+                            locale: fr,
+                          })}
+                        </span>
+                      </div>
+                      <p className="text-sm">{notification.message}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+
+          <div>
+            <h2 className="text-lg font-semibold mb-2">Notifications Passées</h2>
+            {pastNotifications.map((notification) => (
+              <div key={notification.id} className="mb-4 last:mb-0">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(parseISO(notification.dateHeure), {
+                          addSuffix: true,
+                          locale: fr,
+                        })}
+                      </span>
+                    </div>
+                    <p className="text-sm">{notification.message}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
         </ScrollArea>
       </CardContent>
     </Card>

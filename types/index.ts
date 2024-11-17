@@ -90,9 +90,10 @@ export type CompetencesCandidats = Competence & {
 };
 export type NotificationType = {
   id: number;
-  destinataire: string;
+  candidat: number;
   message: string;
   dateHeure: string; // Format ISO 8601 recommandé : "2023-05-15T14:30:00Z"
+  status: string;
 };
 
 /// my object
