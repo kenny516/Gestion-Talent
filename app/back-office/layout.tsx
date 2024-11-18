@@ -16,6 +16,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/theme/toggel";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Talent Management System",
@@ -61,6 +62,7 @@ export default function RootLayout({
                 {children}
               </div>
             </div>
+            <Toaster />
           </SidebarInset>
         </SidebarProvider>
       </main>
