@@ -28,6 +28,7 @@ import axios from "axios";
 import { api_url } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 
+
 // Define Zod schema for validation
 const loginSchema = z.object({
   email: z.string().email({ message: "Email invalide" }),
@@ -54,9 +55,12 @@ export function LoginForm() {
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     setError("");
-
+    toast({
+        variant: "default",
+        title: "Connexion réussie",
+      });
     try {
-      const response = await axios.post(api_url + "/login", data);
+      const response = await axios.post(api_url + "candidat/login", data);
       const { id } = response.data; // Get the returned ID from the API
 
       // Store the ID in session storage
@@ -66,6 +70,7 @@ export function LoginForm() {
         variant: "default",
         title: "Connexion réussie",
       });
+      window.location.href = "/front-office/";
     } catch (err) {
       toast({
         variant: "destructive",

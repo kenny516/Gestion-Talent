@@ -105,6 +105,7 @@ export type NotificationType = {
   destinataire: string;
   message: string;
   dateHeure: string; // Format ISO 8601 recommandé : "2023-05-15T14:30:00Z"
+  status: string;
 };
 export type Experience = {
   experienceId: number;
@@ -123,7 +124,7 @@ export type Formation = {
 };
 
 export type Diplome = {
-  idDiplome: number;
+  id: number;
   diplome: string;
   niveau: number;
 };

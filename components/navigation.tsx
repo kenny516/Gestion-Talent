@@ -22,12 +22,6 @@ const routes = [
     ],
   },
   {
-    title: "Liste offre",
-    href: "/front-office/offre",
-    icon: HandCoins,
-    submenu: [], // Sous-menu vide
-  },
-  {
     title: "Postuler",
     href: "/front-office/postuler",
     icon: BookPlus,

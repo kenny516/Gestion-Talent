@@ -36,20 +36,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const experienceSchema = z.object({
-  date_debut: z.string().min(1, "La date de début est requise"),
-  date_fin: z.string().optional(),
+  dateDebut: z.string().min(1, "La date de début est requise"),
+  dateFin: z.string().optional(),
   description: z.string().min(1, "La description est requise"),
 });
 
 const formationSchema = z.object({
-  date_debut: z.string().min(1, "La date de début est requise"),
-  date_fin: z.string().optional(),
+  dateDebut: z.string().min(1, "La date de début est requise"),
+  dateFin: z.string().optional(),
   description: z.string().min(1, "La description est requise"),
-});
-
-const diplomeSchema = z.object({
-  diplome: z.string().min(1, "Le diplôme est requis"),
-  niveau: z.number().min(1, "Le niveau doit être supérieur à 0"),
 });
 
 const formSchema = z.object({
@@ -62,7 +57,7 @@ const formSchema = z.object({
     .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
   experiences: z.array(experienceSchema),
   formations: z.array(formationSchema),
-  diplomes: z.array(diplomeSchema),
+  diplomes: z.array(z.number().positive("selectionner un diplome")),
 });
 
 export default function RegisterForm() {
@@ -84,7 +79,7 @@ export default function RegisterForm() {
   useEffect(() => {
     const fetchDiplome = async () => {
       try {
-        const response = await axios.get(api_url + "diplome");
+        const response = await axios.get(api_url + "diplomes");
 
         setDiplome(response.data as Diplome[]);
       } catch (error) {
@@ -92,17 +87,24 @@ export default function RegisterForm() {
       }
     };
     fetchDiplome();
-  });
+  }, []);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(JSON.stringify(values));
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    try {
+      const response = await axios.post(api_url + "candidat", values);
+      window.location.href = "/auth/login";
+      console.log(response.data);
+    } catch (error) {
+      console.error("Erreur lors de la création du candidat:", error);
+    }
   };
 
   const addExperience = () => {
     const experiences = form.getValues("experiences");
     form.setValue("experiences", [
       ...experiences,
-      { date_debut: "", date_fin: "", description: "" },
+      { dateDebut: "", dateFin: "", description: "" },
     ]);
   };
 
@@ -118,7 +120,7 @@ export default function RegisterForm() {
     const formations = form.getValues("formations");
     form.setValue("formations", [
       ...formations,
-      { date_debut: "", date_fin: "", description: "" },
+      { dateDebut: "", dateFin: "", description: "" },
     ]);
   };
 
@@ -132,7 +134,7 @@ export default function RegisterForm() {
 
   const addDiplome = () => {
     const diplomes = form.getValues("diplomes");
-    form.setValue("diplomes", [...diplomes, { diplome: "", niveau: 1 }]);
+    form.setValue("diplomes", [...diplomes, 0]);
   };
 
   const removeDiplome = (index: number) => {
@@ -249,7 +251,7 @@ export default function RegisterForm() {
                       </Button>
                       <FormField
                         control={form.control}
-                        name={`experiences.${index}.date_debut`}
+                        name={`experiences.${index}.dateDebut`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de début</FormLabel>
@@ -262,7 +264,7 @@ export default function RegisterForm() {
                       />
                       <FormField
                         control={form.control}
-                        name={`experiences.${index}.date_fin`}
+                        name={`experiences.${index}.dateFin`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de fin</FormLabel>
@@ -311,7 +313,7 @@ export default function RegisterForm() {
                       </Button>
                       <FormField
                         control={form.control}
-                        name={`formations.${index}.date_debut`}
+                        name={`formations.${index}.dateDebut`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de début</FormLabel>
@@ -324,7 +326,7 @@ export default function RegisterForm() {
                       />
                       <FormField
                         control={form.control}
-                        name={`formations.${index}.date_fin`}
+                        name={`formations.${index}.dateFin`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de fin</FormLabel>
@@ -373,13 +375,15 @@ export default function RegisterForm() {
                       </Button>
                       <FormField
                         control={form.control}
-                        name={`diplomes.${index}.diplome`}
+                        name={`diplomes.${index}`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Diplôme</FormLabel>
                             <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              onValueChange={(value) =>
+                                field.onChange(Number(value))
+                              }
+                              defaultValue={String(field.value)}
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -389,34 +393,14 @@ export default function RegisterForm() {
                               <SelectContent>
                                 {diplome.map((option) => (
                                   <SelectItem
-                                    key={option.idDiplome}
-                                    value={option.diplome}
+                                    key={option.id + index}
+                                    value={String(option.id)}
                                   >
                                     {option.diplome}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`diplomes.${index}.niveau`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Niveau</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min="1"
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value, 10))
-                                }
-                              />
-                            </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
