@@ -1,3 +1,4 @@
+"use client"
 import NotificationsPage from "@/components/front-office/notification";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";

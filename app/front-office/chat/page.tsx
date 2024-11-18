@@ -58,14 +58,14 @@ export default function Home() {
     const savedCandidatId = sessionStorage.getItem("candidat_id");
     return savedCandidatId ? Number(savedCandidatId) : 0;
   });
-  const [candidatDetails, setCandidatDetails] = useState<string>("");
 
   // Fetching the candidat details when `candidat` state is set
   useEffect(() => {
     const fetchData = async () => {
       if (candidat) {
         const details = await geDetailCandidat(candidat);
-        setCandidatDetails(messageInfoCandidat(details));
+        const newMessage : Message = messageInfoCandidat(details);
+        setConversation((prev) => [...prev, newMessage]);
       }
     };
     fetchData();

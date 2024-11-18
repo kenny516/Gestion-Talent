@@ -63,11 +63,11 @@ export default function CandidateForm({
   useCheckSessionId();
   const [postes, setPostes] = useState<Poste[]>([]);
   const [competences, setCompetences] = useState<Competence[]>([]);
-  const [candidat, setCandidat] = useState<number>(() => {
+  const candidat = () => {
     // Récupérer le candidat_id de la session (localStorage ou cookies)
     const savedCandidatId = sessionStorage.getItem("candidat_id");
     return savedCandidatId ? Number(savedCandidatId) : 0;
-  });
+  };
   const [id_poste, setId_poste] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -88,7 +88,7 @@ export default function CandidateForm({
   const form = useForm<z.infer<typeof candidateSchema>>({
     resolver: zodResolver(candidateSchema),
     defaultValues: {
-      candidat_id: candidat,
+      candidat_id: candidat(),
       poste_id: id_poste ? Number(id_poste) : 0,
       candidaturTime: new Date(),
       competences: [],

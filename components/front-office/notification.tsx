@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale"; // Importer la locale française
@@ -9,16 +9,22 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { api_url, NotificationType } from "@/types";
 
-
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [lastFetchedId, setLastFetchedId] = useState<number | null>(null);
+  const candidat_id = () => {
+    // Récupérer le candidat_id de la session (localStorage ou cookies)
+    const savedCandidatId = sessionStorage.getItem("candidat_id");
+    return savedCandidatId ? Number(savedCandidatId) : 0;
+  };
   const { toast } = useToast();
 
   // Fonction pour récupérer les notifications
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(api_url+`candidat/${0}/notification`); // Remplacez par votre endpoint API
+      const response = await axios.get(
+        api_url + `candidat/${candidat_id()}/notification`
+      ); // Remplacez par votre endpoint API
       const data: NotificationType[] = await response.data;
 
       // Trier les notifications du plus récent au plus ancien
