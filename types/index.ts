@@ -96,13 +96,13 @@ export type CompetencesEmployes = Competence & {
   niveau: 1 | 2 | 3 | 4 | 5;
 };
 
-export type CompetencesCandidats = Competence & {
+export type CompetencesCandidats =  {
   candidat_id: number;
+  competence :Competence
   niveau: 0 | 1 | 2 | 3 | 4 | 5;
 };
 export type NotificationType = {
   id: number;
-  destinataire: string;
   message: string;
   dateHeure: string; // Format ISO 8601 recommandé : "2023-05-15T14:30:00Z"
   status: string;
@@ -159,7 +159,7 @@ export type CandidatDetail = {
   experiences: Experience[];
   diplomes: Diplome[];
   notes: NoteCandidat[];
-  competences: CompetencesCandidats[];
+  competences:[ CompetencesCandidats];
   postulations: [
     {
       id: 1;
