@@ -32,7 +32,7 @@ import { Slider } from "@/components/ui/slider";
 const candidateSchema = z.object({
   candidat_id: z.number(),
   poste_id: z.number().positive("Veuillez sélectionner un poste"),
-  candidaturTime: z.date().refine((val) => !isNaN(val.getTime()), {
+  candidatureTime: z.date().refine((val) => !isNaN(val.getTime()), {
     message: "La date est invalide",
   }),
   competences: z.array(
@@ -90,7 +90,7 @@ export default function CandidateForm({
     defaultValues: {
       candidat_id: candidat(),
       poste_id: id_poste ? Number(id_poste) : 0,
-      candidaturTime: new Date(),
+      candidatureTime: new Date(),
       competences: [],
     },
   });
@@ -130,7 +130,7 @@ export default function CandidateForm({
   async function onSubmit(values: z.infer<typeof candidateSchema>) {
     try {
       console.log("Données envoyées :", JSON.stringify(values, null, 2));
-      const response = await axios.post(api_url + "candidat", values, {
+      const response = await axios.post(api_url + "candidat/postuler", values, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -140,11 +140,7 @@ export default function CandidateForm({
         title: "Succes.",
         description: "Candidature enregistrée avec succès!",
       });
-
       form.reset();
-      router.push(
-        `/back-office/talent/identification/candidats/${response.data.id}`
-      );
     } catch (error: any) {
       toast({
         variant: "destructive",

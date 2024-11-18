@@ -29,10 +29,10 @@ const data = {
       icon: User,
       isActive: true,
       items: [
-        {
+        /*{
           title: "Internal Search",
           url: "/back-office/talent/identification/search",
-        },
+        },*/
         {
           title: "candidat",
           url: "/back-office/talent/identification/candidats",
@@ -48,7 +48,7 @@ const data = {
         { title: "poste", url: "/back-office/talent/identification/postes" },
       ],
     },
-    {
+    /*{
       title: "Acquisition",
       url: "/back-office/talent/acquisition",
       icon: Save,
@@ -66,15 +66,15 @@ const data = {
           url: "/back-office/talent/acquisition/offreEmbauche",
         },
       ],
-    },
+    },*/
     {
       title: "Development",
       url: "/back-office/talent/development",
       icon: BookOpen,
       items: [
-        { title: "Evaluate", url: "/back-office/talent/development/evaluate" },
+        /*{ title: "Evaluate", url: "/back-office/talent/development/evaluate" },
         { title: "Filter", url: "/back-office/talent/development/filter" },
-        { title: "Contract", url: "/back-office/talent/development/contract" },
+        { title: "Contract", url: "/back-office/talent/development/contract" },*/
         { title: "note", url: "/back-office/talent/development/note" },
         { title: "suivie", url: "/back-office/talent/development/suivie" },
       ],

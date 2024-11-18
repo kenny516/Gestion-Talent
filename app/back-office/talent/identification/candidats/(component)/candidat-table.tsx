@@ -23,7 +23,7 @@ import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 import { getStatusColor } from "@/components/ui/code-color";
-import { Plus, Search } from "lucide-react";
+import {  Search } from "lucide-react";
 
 const CandidatTable = ({
   title,

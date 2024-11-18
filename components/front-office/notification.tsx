@@ -4,6 +4,7 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import { fr } from "date-fns/locale"; // Importer la locale française
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { api_url, NotificationType } from "@/types";
@@ -54,6 +55,13 @@ export default function NotificationsPage() {
       );
       const data: NotificationType[] = response.data;
 
+      data.forEach((notification) =>
+        toast({
+          variant: "default",
+          title: "Nouvelle notification",
+          description: notification.message,
+        })
+      );
       // Add new notifications to the state, ensuring no duplicates
       setNewNotifications((prevNewNotifications) => {
         const existingIds = new Set(
@@ -112,13 +120,13 @@ export default function NotificationsPage() {
     }
   };
   // Fetch notifications on initial load
-  /*useEffect(() => {
+  useEffect(() => {
     fetchPastNotifs(); // Fetch past notifications
     fetchNewNotifs(); // Initial fetch for new notifications
     const interval = setInterval(fetchNewNotifs, 10000); // Fetch new notifications every 10 seconds
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, []);*/
+  }, []);
 
   return (
     <Card className="w-full max-w-3xl mx-auto">

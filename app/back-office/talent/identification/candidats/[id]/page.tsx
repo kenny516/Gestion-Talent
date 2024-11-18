@@ -255,10 +255,10 @@ export default function CandidateDetailsPage({
                   <div className="space-y-2">
                     {candidat?.competences.map((comp) => (
                       <div
-                        key={comp.id}
+                        key={comp.competence.id}
                         className={`flex items-center justify-between bg-secondary/20 p-2 rounded`}
                       >
-                        <span>{comp.nom}</span>
+                        <span>{comp.competence.nom}</span>
                         <Badge
                           className={`${getNiveauColor(comp.niveau)} px-3 py-1`}
                         >

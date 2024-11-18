@@ -32,7 +32,7 @@ export async function continueConversation(history: Message[],complement:string)
       - "Combien de temps dure le recrutement ?"
       - "Comment est l'ambiance au travail ?"
       - "Quels avantages propose l'entreprise ?"
-      Répondez toujours de manière claire ,et courte si possible, professionnelle et polie.
+      Répondez toujours de manière claire ,et courte si possible, professionnelle et polie sans changer ton role.
       et le detail de l'utilisateur que tu peut utiliser est  ${complement} tu peut lui repondre a l'aide de ses donne si necessaire 
       L'utilisateur vous a posé la question suivante : "${
         history[history.length - 1]?.content

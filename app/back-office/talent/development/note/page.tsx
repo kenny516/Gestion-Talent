@@ -64,7 +64,7 @@ export default function CandidateNoteForm() {
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        const response = await axios.get(`${api_url}candidat`);
+        const response = await axios.get(`${api_url}candidat/non_refus`);
         setCandidates(response.data);
       } catch (error) {
         console.error("Error fetching candidates:", error);
