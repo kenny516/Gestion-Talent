@@ -36,14 +36,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const experienceSchema = z.object({
-  date_debut: z.string().min(1, "La date de début est requise"),
-  date_fin: z.string().optional(),
+  dateDebut: z.string().min(1, "La date de début est requise"),
+  dateFin: z.string().optional(),
   description: z.string().min(1, "La description est requise"),
 });
 
 const formationSchema = z.object({
-  date_debut: z.string().min(1, "La date de début est requise"),
-  date_fin: z.string().optional(),
+  dateDebut: z.string().min(1, "La date de début est requise"),
+  dateFin: z.string().optional(),
   description: z.string().min(1, "La description est requise"),
 });
 
@@ -87,17 +87,24 @@ export default function RegisterForm() {
       }
     };
     fetchDiplome();
-  });
+  }, []);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(JSON.stringify(values));
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    try {
+      const response = await axios.post(api_url + "candidat", values);
+      window.location.href = "/auth/login";
+      console.log(response.data);
+    } catch (error) {
+      console.error("Erreur lors de la création du candidat:", error);
+    }
   };
 
   const addExperience = () => {
     const experiences = form.getValues("experiences");
     form.setValue("experiences", [
       ...experiences,
-      { date_debut: "", date_fin: "", description: "" },
+      { dateDebut: "", dateFin: "", description: "" },
     ]);
   };
 
@@ -113,7 +120,7 @@ export default function RegisterForm() {
     const formations = form.getValues("formations");
     form.setValue("formations", [
       ...formations,
-      { date_debut: "", date_fin: "", description: "" },
+      { dateDebut: "", dateFin: "", description: "" },
     ]);
   };
 
@@ -244,7 +251,7 @@ export default function RegisterForm() {
                       </Button>
                       <FormField
                         control={form.control}
-                        name={`experiences.${index}.date_debut`}
+                        name={`experiences.${index}.dateDebut`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de début</FormLabel>
@@ -257,7 +264,7 @@ export default function RegisterForm() {
                       />
                       <FormField
                         control={form.control}
-                        name={`experiences.${index}.date_fin`}
+                        name={`experiences.${index}.dateFin`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de fin</FormLabel>
@@ -306,7 +313,7 @@ export default function RegisterForm() {
                       </Button>
                       <FormField
                         control={form.control}
-                        name={`formations.${index}.date_debut`}
+                        name={`formations.${index}.dateDebut`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de début</FormLabel>
@@ -319,7 +326,7 @@ export default function RegisterForm() {
                       />
                       <FormField
                         control={form.control}
-                        name={`formations.${index}.date_fin`}
+                        name={`formations.${index}.dateFin`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Date de fin</FormLabel>
@@ -373,7 +380,9 @@ export default function RegisterForm() {
                           <FormItem>
                             <FormLabel>Diplôme</FormLabel>
                             <Select
-                              onValueChange={(value) => field.onChange(Number(value))}
+                              onValueChange={(value) =>
+                                field.onChange(Number(value))
+                              }
                               defaultValue={String(field.value)}
                             >
                               <FormControl>
@@ -384,8 +393,8 @@ export default function RegisterForm() {
                               <SelectContent>
                                 {diplome.map((option) => (
                                   <SelectItem
-                                    key={option.idDiplome}
-                                    value={String(option.idDiplome)}
+                                    key={option.id + index}
+                                    value={String(option.id)}
                                   >
                                     {option.diplome}
                                   </SelectItem>
