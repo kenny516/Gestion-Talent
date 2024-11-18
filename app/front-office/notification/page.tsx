@@ -9,7 +9,7 @@ function useCheckSessionId() {
     const candidatId = sessionStorage.getItem("candidat_id");
 
     if (!candidatId) {
-      router.push("/auth/login");
+        window.location.href ="/auth/login";
     }
   }, [router]);
   return null;

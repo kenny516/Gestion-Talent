@@ -47,11 +47,6 @@ const formationSchema = z.object({
   description: z.string().min(1, "La description est requise"),
 });
 
-const diplomeSchema = z.object({
-  diplome: z.string().min(1, "Le diplôme est requis"),
-  niveau: z.number().min(1, "Le niveau doit être supérieur à 0"),
-});
-
 const formSchema = z.object({
   nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
@@ -62,7 +57,7 @@ const formSchema = z.object({
     .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
   experiences: z.array(experienceSchema),
   formations: z.array(formationSchema),
-  diplomes: z.array(diplomeSchema),
+  diplomes: z.array(z.number().positive("selectionner un diplome")),
 });
 
 export default function RegisterForm() {
@@ -84,7 +79,7 @@ export default function RegisterForm() {
   useEffect(() => {
     const fetchDiplome = async () => {
       try {
-        const response = await axios.get(api_url + "diplome");
+        const response = await axios.get(api_url + "diplomes");
 
         setDiplome(response.data as Diplome[]);
       } catch (error) {
@@ -132,7 +127,7 @@ export default function RegisterForm() {
 
   const addDiplome = () => {
     const diplomes = form.getValues("diplomes");
-    form.setValue("diplomes", [...diplomes, { diplome: "", niveau: 1 }]);
+    form.setValue("diplomes", [...diplomes, 0]);
   };
 
   const removeDiplome = (index: number) => {
@@ -373,13 +368,13 @@ export default function RegisterForm() {
                       </Button>
                       <FormField
                         control={form.control}
-                        name={`diplomes.${index}.diplome`}
+                        name={`diplomes.${index}`}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Diplôme</FormLabel>
                             <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              onValueChange={(value) => field.onChange(Number(value))}
+                              defaultValue={String(field.value)}
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -390,33 +385,13 @@ export default function RegisterForm() {
                                 {diplome.map((option) => (
                                   <SelectItem
                                     key={option.idDiplome}
-                                    value={option.diplome}
+                                    value={String(option.idDiplome)}
                                   >
                                     {option.diplome}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`diplomes.${index}.niveau`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Niveau</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min="1"
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value, 10))
-                                }
-                              />
-                            </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
