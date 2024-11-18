@@ -22,11 +22,9 @@ import { api_url, Candidat, suivie, TypeNote } from "@/types";
 import {
   ArrowRight,
   Briefcase,
-  Building2,
   CheckCircle2,
   Loader2,
   User2,
-  Calendar,
 } from "lucide-react";
 import { getStatusColor } from "./ui/code-color";
 
@@ -40,14 +38,14 @@ const fetchCandidates = async (): Promise<Candidat[]> => {
   }
 };
 
-const fetchNotifications = async (
+const fetchCandidatDetail = async (
   idCandidat: number
 ): Promise<suivie | null> => {
   try {
     const response = await axios.get(`${api_url}candidat/${idCandidat}`);
     return response.data as suivie;
   } catch (error) {
-    console.error("Erreur lors de la récupération des notifications:", error);
+    console.error("Erreur lors de la récupération:", error);
     return null;
   }
 };
@@ -57,7 +55,7 @@ const fetchTypenote = async (): Promise<TypeNote[]> => {
     const response = await axios.get(`${api_url}type_note`);
     return response.data as TypeNote[];
   } catch (error) {
-    console.error("Erreur lors de la récupération des notifications:", error);
+    console.error("Erreur lors de la récupération:", error);
     return [];
   }
 };
@@ -89,7 +87,7 @@ export function ApplicationStatus() {
     if (idCandidate !== null) {
       const loadSuivie = async () => {
         setLoading(true);
-        const data = await fetchNotifications(idCandidate);
+        const data = await fetchCandidatDetail(idCandidate);
         setSuivie(data);
         setLoading(false);
       };
@@ -156,20 +154,21 @@ export function ApplicationStatus() {
                   </div>
                   <div className="flex flex-col">
                     <span className="font-semibold text-primary text-lg">
-                      {suivie.poste?.titre || "Non spécifié"}
+                      {suivie.postulations[0].poste?.titre || "Non spécifié"}
                     </span>
                     <span className="text-sm text-muted-foreground">
-                      {suivie.poste?.departement || "Non spécifié"}
+                      {suivie.postulations[0].poste?.departement ||
+                        "Non spécifié"}
                     </span>
                   </div>
                 </span>
                 <Badge
                   variant="outline"
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-transform duration-300 group-hover:scale-105 ${getStatusColor(
-                    suivie.status || "En attente"
+                    suivie.postulations[0].status || "En attente"
                   )}`}
                 >
-                  {suivie.status}
+                  {suivie.postulations[0].status}
                 </Badge>
               </div>
             </div>
@@ -226,7 +225,7 @@ export function ApplicationStatus() {
                   </span>
                   {index < typeNote.length - 1 && (
                     <ArrowRight
-                      className={`absolute -right-3 top-7 w-6 h-6 transition-all duration-500
+                      className={`absolute -right-3 top-4 w-6 h-6 transition-all duration-500
                         ${
                           index < suivie.currentStep - 1
                             ? "text-primary opacity-100"

@@ -1,151 +1,440 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
+  Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BookUser, CircleX, LoaderCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, Trash2 } from "lucide-react";
+import { api_url, Diplome } from "@/types";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-export function RegisterForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+const experienceSchema = z.object({
+  date_debut: z.string().min(1, "La date de début est requise"),
+  date_fin: z.string().optional(),
+  description: z.string().min(1, "La description est requise"),
+});
 
-  async function onSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setIsLoading(true);
-    setError("");
+const formationSchema = z.object({
+  date_debut: z.string().min(1, "La date de début est requise"),
+  date_fin: z.string().optional(),
+  description: z.string().min(1, "La description est requise"),
+});
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    } catch (err) {
-      setError("Une erreur est survenue lors de l'inscription.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
+const diplomeSchema = z.object({
+  diplome: z.string().min(1, "Le diplôme est requis"),
+  niveau: z.number().min(1, "Le niveau doit être supérieur à 0"),
+});
+
+const formSchema = z.object({
+  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
+  email: z.string().email("Email invalide"),
+  telephone: z.string().optional(),
+  motDePasse: z
+    .string()
+    .min(8, "Le mot de passe doit contenir au moins 8 caractères"),
+  experiences: z.array(experienceSchema),
+  formations: z.array(formationSchema),
+  diplomes: z.array(diplomeSchema),
+});
+
+export default function RegisterForm() {
+  const [diplome, setDiplome] = useState<Diplome[]>([]);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      nom: "",
+      prenom: "",
+      email: "",
+      telephone: "",
+      motDePasse: "",
+      experiences: [],
+      formations: [],
+      diplomes: [],
+    },
+  });
+
+  useEffect(() => {
+    const fetchDiplome = async () => {
+      try {
+        const response = await axios.get(api_url + "diplome");
+
+        setDiplome(response.data as Diplome[]);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des diplômes:", error);
+      }
+    };
+    fetchDiplome();
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(JSON.stringify(values));
+  };
+
+  const addExperience = () => {
+    const experiences = form.getValues("experiences");
+    form.setValue("experiences", [
+      ...experiences,
+      { date_debut: "", date_fin: "", description: "" },
+    ]);
+  };
+
+  const removeExperience = (index: number) => {
+    const experiences = form.getValues("experiences");
+    form.setValue(
+      "experiences",
+      experiences.filter((_, i) => i !== index)
+    );
+  };
+
+  const addFormation = () => {
+    const formations = form.getValues("formations");
+    form.setValue("formations", [
+      ...formations,
+      { date_debut: "", date_fin: "", description: "" },
+    ]);
+  };
+
+  const removeFormation = (index: number) => {
+    const formations = form.getValues("formations");
+    form.setValue(
+      "formations",
+      formations.filter((_, i) => i !== index)
+    );
+  };
+
+  const addDiplome = () => {
+    const diplomes = form.getValues("diplomes");
+    form.setValue("diplomes", [...diplomes, { diplome: "", niveau: 1 }]);
+  };
+
+  const removeDiplome = (index: number) => {
+    const diplomes = form.getValues("diplomes");
+    form.setValue(
+      "diplomes",
+      diplomes.filter((_, i) => i !== index)
+    );
+  };
 
   return (
-    <>
-      <CardHeader className="space-y-3 pb-8">
-        <div className="flex justify-center">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          >
-            <div className="bg-primary/10 p-3 rounded-2xl">
-              <BookUser className="h-12 w-12 text-primary" />
-            </div>
-          </motion.div>
-        </div>
-        <CardTitle className="text-2xl font-bold text-center">
-          Créer un compte
-        </CardTitle>
-        <CardDescription className="text-center text-base">
-          Commencez votre parcours professionnel
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle>Inscription Candidat</CardTitle>
+        <CardDescription>
+          Créez votre profil pour postuler à nos offres d&apos;emploi.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={onSubmit}>
-        <CardContent className="grid gap-5">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="space-y-5"
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nom" className="text-sm font-medium">
-                  Nom
-                </Label>
-                <Input
-                  id="nom"
-                  type="text"
-                  required
-                  className="h-11"
-                  placeholder="Dupont"
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <Tabs defaultValue="personal" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="personal">Personnel</TabsTrigger>
+                <TabsTrigger value="experiences">Expériences</TabsTrigger>
+                <TabsTrigger value="formations">Formations</TabsTrigger>
+                <TabsTrigger value="diplomes">Diplômes</TabsTrigger>
+              </TabsList>
+              <TabsContent value="personal" className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="nom"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Dupont" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="prenom" className="text-sm font-medium">
-                  Prénom
-                </Label>
-                <Input
-                  id="prenom"
-                  type="text"
-                  required
-                  className="h-11"
-                  placeholder="Jean"
+                <FormField
+                  control={form.control}
+                  name="prenom"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Prénom</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Jean" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                required
-                className="h-11"
-                placeholder="vous@exemple.com"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Mot de passe
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                required
-                className="h-11"
-                placeholder="••••••••"
-              />
-            </div>
-          </motion.div>
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-sm text-red-500 bg-red-50 p-3 rounded-lg flex items-center gap-2"
-            >
-              <CircleX className="h-4 w-4" />
-              {error}
-            </motion.div>
-          )}
-        </CardContent>
-        <CardFooter className="flex flex-col gap-6 pt-4">
-          <Button
-            className="w-full h-11 text-base font-medium"
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading && (
-              <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Créer un compte
-          </Button>
-          <p className="text-sm text-muted-foreground text-center px-4">
-            Déjà inscrit?{" "}
-            <Link
-              href="/auth/login"
-              className="text-primary font-medium hover:underline"
-            >
-              Se connecter
-            </Link>
-          </p>
-        </CardFooter>
-      </form>
-    </>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="jean.dupont@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="telephone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Téléphone</FormLabel>
+                      <FormControl>
+                        <Input placeholder="+33 6 12 34 56 78" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="motDePasse"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mot de passe</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </TabsContent>
+              <TabsContent value="experiences">
+                <ScrollArea className="h-[400px] pr-4">
+                  {form.watch("experiences").map((_, index) => (
+                    <div
+                      key={index}
+                      className="mb-4 p-4 border rounded-md relative"
+                    >
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() => removeExperience(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <FormField
+                        control={form.control}
+                        name={`experiences.${index}.date_debut`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date de début</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`experiences.${index}.date_fin`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date de fin</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`experiences.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                </ScrollArea>
+                <Button type="button" onClick={addExperience} className="mt-2">
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter une expérience
+                </Button>
+              </TabsContent>
+              <TabsContent value="formations">
+                <ScrollArea className="h-[400px] pr-4">
+                  {form.watch("formations").map((_, index) => (
+                    <div
+                      key={index}
+                      className="mb-4 p-4 border rounded-md relative"
+                    >
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() => removeFormation(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <FormField
+                        control={form.control}
+                        name={`formations.${index}.date_debut`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date de début</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`formations.${index}.date_fin`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date de fin</FormLabel>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`formations.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                </ScrollArea>
+                <Button type="button" onClick={addFormation} className="mt-2">
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter une formation
+                </Button>
+              </TabsContent>
+              <TabsContent value="diplomes">
+                <ScrollArea className="h-[400px] pr-4">
+                  {form.watch("diplomes").map((_, index) => (
+                    <div
+                      key={index}
+                      className="mb-4 p-4 border rounded-md relative"
+                    >
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() => removeDiplome(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <FormField
+                        control={form.control}
+                        name={`diplomes.${index}.diplome`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Diplôme</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Sélectionnez un diplôme" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {diplome.map((option) => (
+                                  <SelectItem
+                                    key={option.idDiplome}
+                                    value={option.diplome}
+                                  >
+                                    {option.diplome}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`diplomes.${index}.niveau`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Niveau</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value, 10))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                </ScrollArea>
+                <Button type="button" onClick={addDiplome} className="mt-2">
+                  <Plus className="mr-2 h-4 w-4" /> Ajouter un diplôme
+                </Button>
+              </TabsContent>
+            </Tabs>
+            <Button type="submit" className="w-full">
+              S'inscrire
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }

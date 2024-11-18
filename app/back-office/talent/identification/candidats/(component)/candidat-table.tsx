@@ -43,13 +43,15 @@ const CandidatTable = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
 
-  const filteredCandidates = candidats.filter(
-    (candidate) =>
-      (selectedStatus === "Tous" || candidate.status === selectedStatus) &&
-      candidate.poste?.departement
-        .toLowerCase()
+  const filteredCandidates = candidats.filter((candidate) => {
+    const firstPostulation = candidate.postulations?.[0];
+    return (
+      (selectedStatus === "Tous" || firstPostulation?.status === selectedStatus) &&
+      firstPostulation?.poste?.departement
+        ?.toLowerCase()
         .includes(posteSearch.toLowerCase())
-  );
+    );
+  });
 
   const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage);
   const paginatedCandidates = filteredCandidates.slice(
@@ -64,15 +66,6 @@ const CandidatTable = ({
         <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/back-office/talent/identification/candidats/new">
-                <Button
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2"
-                  size="sm"
-                >
-                  <Plus className="h-4 w-4" />
-                  Nouveau candidat
-                </Button>
-              </Link>
 
               <Select
                 value={selectedStatus}
@@ -158,18 +151,18 @@ const CandidatTable = ({
                         {candidate.email}
                       </TableCell>
                       <TableCell>{candidate.telephone || "N/A"}</TableCell>
-                      <TableCell>{candidate.dateCandidature}</TableCell>
+                      <TableCell>{candidate.postulations[0].datePostulation+""}</TableCell>
                       <TableCell>
-                        {candidate.poste?.departement || "N/A"}
+                        {candidate.postulations[0].poste?.departement || "N/A"}
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"
                           className={`${getStatusColor(
-                            candidate.status || "En attente"
+                            candidate.postulations[0].status || "En attente"
                           )}`}
                         >
-                          {candidate.status || "En attente"}
+                          {candidate.postulations[0].status || "En attente"}
                         </Badge>
                       </TableCell>
                       <TableCell>

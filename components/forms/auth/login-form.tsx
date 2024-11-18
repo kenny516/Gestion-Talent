@@ -57,6 +57,11 @@ export function LoginForm() {
 
     try {
       const response = await axios.post(api_url + "/login", data);
+      const { id } = response.data; // Get the returned ID from the API
+
+      // Store the ID in session storage
+      sessionStorage.setItem("candidat_id", id);
+
       toast({
         variant: "default",
         title: "Connexion réussie",
@@ -103,7 +108,7 @@ export function LoginForm() {
               className="space-y-5"
             >
               <div className="space-y-2">
-                {/* email */}
+                {/* Email */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -120,13 +125,13 @@ export function LoginForm() {
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  {/* email */}
+                  {/* Password */}
                   <FormField
                     control={form.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Mots de passe</FormLabel>
+                        <FormLabel>Mot de passe</FormLabel>
                         <FormControl>
                           <Input
                             type="password"
