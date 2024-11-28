@@ -11,6 +11,7 @@ import ReactMarkdown from "react-markdown";
 import { generateEvaluation, generateQuestion } from "@/app/api/ai/route";
 import { api_url } from "@/types";
 import axios from "axios";
+import { Question } from "@/types/ai";
 
 export default function InterviewPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -18,13 +19,15 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
   const [answer, setAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(300);
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       const response = await axios.get(api_url + "poste");
       const theme = JSON.stringify(response.data);
+      console.log(theme);
       const questionsData = await generateQuestion(theme);
+      console.log(questionsData);
       setQuestions(questionsData);
     };
 
@@ -48,10 +51,13 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
   const handleSubmit = async () => {
     const evaluation = await generateEvaluation({
       role: "user",
-      content: answer,
+      content: `question  numero ${currentQuestion} `+answer,
     });
+    
 
-    const mockScore = Math.floor(Math.random() * 100);
+    generateEvaluation(evaluation);
+
+    const mockScore = 0;
     setScore((prevScore) => prevScore + mockScore);
 
     if (currentQuestion < questions.length - 1) {
@@ -100,7 +106,7 @@ export default function InterviewPage({ params }: { params: { id: string } }) {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium">
-                  Difficulty: {questions[currentQuestion]?.difficulty}
+                  Difficulty: {questions[currentQuestion]?.niveau}
                 </span>
                 <span className="text-sm text-muted-foreground">
                   Time Limit: 5 minutes

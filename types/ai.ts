@@ -3,6 +3,22 @@ export type ChatMessage = {
   content: string;
 };
 
+export type Message = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
+
+export type Question = {
+  niveau: string;
+  question: string;
+};
+
+export type response = {
+  note: number;
+  remarques: string;
+  reponse_attendue: string;
+};
+
 export type ChatRequestBody = {
   messages: ChatMessage[];
 };
