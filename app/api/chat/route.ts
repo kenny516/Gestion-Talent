@@ -1,17 +1,17 @@
-"use server"
+"use server";
 import { generateText } from "ai";
 import { createCohere } from "@ai-sdk/cohere";
-
 
 export interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-
-export async function continueConversation(history: Message[],complement:string) {
-
-    console.log(complement);
+export async function continueConversation(
+  history: Message[],
+  complement: string
+) {
+  console.log(complement);
   // Assurez-vous que la clé API est définie dans l'environnement
   const apiKey = process.env.API_COHE;
   if (!apiKey) {
@@ -26,15 +26,16 @@ export async function continueConversation(history: Message[],complement:string)
   const { text } = await generateText({
     model: cohere("command-r-plus"),
     prompt: `
-      Vous êtes un assistant RH pour une entreprise. Vous aidez les candidats en répondant à leurs questions sur les offres d'emploi, le processus de recrutement, la culture d'entreprise, etc. 
-      Voici des exemples de questions :
-      - "Quels sont les critères pour ce poste ?"
-      - "Combien de temps dure le recrutement ?"
-      - "Comment est l'ambiance au travail ?"
-      - "Quels avantages propose l'entreprise ?"
-      Répondez toujours de manière claire ,et courte si possible, professionnelle et polie sans changer ton role.
-      et le detail de l'utilisateur que tu peut utiliser est  ${complement} tu peut lui repondre a l'aide de ses donne si necessaire 
-      L'utilisateur vous a posé la question suivante : "${
+      Vous êtes un assistant RH pour une entreprise. Votre rôle est de répondre aux questions des candidats concernant les offres d'emploi, le processus de recrutement, la culture de l'entreprise, les avantages sociaux, et d'autres aspects relatifs à l'environnement de travail. Vous devez répondre de manière claire, concise, professionnelle et courtoise. Voici des exemples de questions que vous pourriez recevoir :
+
+      - "Quels sont les critères requis pour ce poste ?"
+      - "Quel est le processus de recrutement et combien de temps cela prend-il ?"
+      - "Pouvez-vous me parler de l'ambiance de travail dans l'entreprise ?"
+      - "Quels avantages l'entreprise offre-t-elle à ses employés ?"
+
+      Vous devez toujours répondre avec des informations précises, pertinentes et en restant dans le cadre de votre rôle d'assistant RH. Utilisez les informations suivantes sur l'utilisateur, si elles sont pertinentes, pour personnaliser votre réponse : ${complement}.
+
+      L'utilisateur a posé la question suivante : "${
         history[history.length - 1]?.content
       }"
     `,
