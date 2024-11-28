@@ -200,7 +200,7 @@ export default function CandidateForm({
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="candidaturTime"
+                name="candidatureTime"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Date de candidature</FormLabel>
