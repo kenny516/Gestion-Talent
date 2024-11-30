@@ -43,7 +43,6 @@ const congéSchema = z.object({
 export default function CongéForm() {
   const [employes, setEmployes] = useState<Employe[]>([]);
   const [typesConge, setTypesConge] = useState<TypeConge[]>([]);
-  const [valideConge, setValideConge] = useState<number>(0);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof congéSchema>>({
     resolver: zodResolver(congéSchema),
@@ -103,13 +102,6 @@ export default function CongéForm() {
         ),
         status: "En attente",
       };
-      if (valideConge - newConge.duree < 0 && typesConge) {
-        toast({
-          variant: "destructive",
-          title: "Erreur.",
-          description: "Le nombre de jours de congé dépasse la limite pour cet employé.",
-        });
-      }
       const response = await axios.post(api_url + "conge", newConge, {
         headers: {
           "Content-Type": "application/json",

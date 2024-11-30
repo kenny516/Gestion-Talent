@@ -29,7 +29,7 @@ import axios from "axios";
 
 export default function CongeTable() {
   const [selectedStatus, setSelectedStatus] = useState<
-    "En attente" | "Termine" | "Tous"
+    "En attente" | "Termine" | "Tous" | "En cours"
   >("Tous");
   const [posteSearch, setPosteSearch] = useState<string>("");
   const [employeSearch, setEmployeSearch] = useState<string>("");
@@ -70,7 +70,7 @@ export default function CongeTable() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={"conge"} description={"Liste de conge des employe"} />
+      <PageHeader title={"Conge"} description={"Liste de conge des employe"} />
       <Card className="bg-card text-card-foreground shadow">
         <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -78,7 +78,7 @@ export default function CongeTable() {
               <Select
                 value={selectedStatus}
                 onValueChange={(value) =>
-                  setSelectedStatus(value as "En attente" | "Termine" | "Tous")
+                  setSelectedStatus(value as "En attente" | "Termine" | "Tous" | "En cours")
                 }
               >
                 <SelectTrigger className="w-40 bg-background border-input">
@@ -87,6 +87,7 @@ export default function CongeTable() {
                 <SelectContent>
                   <SelectItem value="Tous">Tous</SelectItem>
                   <SelectItem value="En attente">En attente</SelectItem>
+                  <SelectItem value="En cours">En cours</SelectItem>
                   <SelectItem value="Termine">Terminé</SelectItem>
                 </SelectContent>
               </Select>
@@ -154,7 +155,7 @@ export default function CongeTable() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <SkeletonGeneralise rows={5} cols={8} />
+                  <SkeletonGeneralise rows={6} cols={8} />
                 ) : (
                   paginatedConges.map((conge) => (
                     <TableRow
