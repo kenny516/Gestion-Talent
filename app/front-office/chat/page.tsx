@@ -30,7 +30,6 @@ const geDetailCandidat = async (id: number) => {
 };
 
 function useCheckSessionId() {
-
   useEffect(() => {
     const candidatId = sessionStorage.getItem("candidat_id");
 
