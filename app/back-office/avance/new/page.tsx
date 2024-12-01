@@ -123,13 +123,19 @@ export default function AvanceForm() {
     try {
       const response = await axios.post(`${api_url}avance/save`, avance);
 
-    //   console.log(response.data);
-
-      toast({
-        variant: "default",
-        title: "Succès",
-        description: "Avance créée avec succès.",
-      });
+      if (response.data.success) {
+        toast({
+          variant: "default",
+          title: "Succès",
+          description: "Avance créée avec succès.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: response.data.errorMessage,
+        });
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
