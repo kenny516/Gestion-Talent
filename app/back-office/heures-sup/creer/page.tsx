@@ -49,7 +49,7 @@ const CreateHeuresSup = () => {
   useEffect(() => {
     const fetchEmployes = async () => {
       try {
-        const response = await axios.get(`${api_url}employes`);
+        const response = await axios.get(`${api_url}employe/all`);
         setEmployes(response.data);
       } catch (err) {
         console.error("Erreur lors du chargement des employés", err);
