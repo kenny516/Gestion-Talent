@@ -123,7 +123,7 @@ export default function AvanceForm() {
     try {
       const response = await axios.post(`${api_url}avance/save`, avance);
 
-      console.log(response.data);
+    //   console.log(response.data);
 
       toast({
         variant: "default",
