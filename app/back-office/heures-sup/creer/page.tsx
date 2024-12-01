@@ -83,7 +83,7 @@ const CreateHeuresSup = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10 p-10">
       <div className="flex justify-between items-center">
         <PageHeader
           title="Création d'heures supplémentaires"

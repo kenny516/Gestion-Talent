@@ -46,6 +46,7 @@ const data = {
           url: "/back-office/talent/identification/employees",
         },
         { title: "poste", url: "/back-office/talent/identification/postes" },
+        { title: "Heures Supplementaire", url: "/back-office/heures-sup" },
       ],
     },
     /*{
