@@ -207,6 +207,25 @@ export type tokenUser = {
   id: number;
   nom: string;
 };
+// conge
+export type TypeConge = {
+    id: number;
+    nom: string;
+    estPaye: boolean;
+    cumulable: boolean;
+    dureeMax: number;
+  };
+ export type Conge = {
+    id?: number;
+    idTypeConge: TypeConge;
+    dateDebut: string;
+    dateFin: string;
+    duree: number;
+    status: string;
+    employe: Employe;
+  };
+
+
 // Optional function and trigger types to represent trigger and functions in TypeScript (informative, not executable)
 export type EvaluerStatutCandidat = () => void;
 
