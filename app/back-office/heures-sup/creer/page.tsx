@@ -22,7 +22,13 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 const heuresSupSchema = z.object({
-  id_employe: z.number({ required_error: "L'identifiant de l'employé est requis" }),
+  employe: z
+    .object({
+      id: z.number(),
+      nom: z.string(),
+      prenom: z.string(),
+    })
+    .nullable(),
   date_debut: z.string().min(1, { message: "La date de début est requise" }),
   date_fin: z.string().min(1, { message: "La date de fin est requise" }),
 });
@@ -36,7 +42,7 @@ const CreateHeuresSup = () => {
   const form = useForm<HeuresSupFormData>({
     resolver: zodResolver(heuresSupSchema),
     defaultValues: {
-      id_employe: 0,
+      employe: null,
       date_debut: "",
       date_fin: "",
     },
@@ -56,9 +62,8 @@ const CreateHeuresSup = () => {
   }, []);
 
   async function onSubmit(values: HeuresSupFormData) {
-    console.log("Données à envoyer :", values); // Ajout de log
-    console.log("URL API : ", api_url + "heures_sup");
     try {
+      console.log("Données à envoyer :", values);
       await axios.post(api_url + "heures_sup", values, {
         headers: {
           "Content-Type": "application/json",
@@ -71,10 +76,9 @@ const CreateHeuresSup = () => {
       });
       form.reset();
     } catch (error) {
-      console.error("Erreur lors de l'envoi :", error); // Ajout de log pour les erreurs
+      console.error("Erreur lors de l'envoi :", error);
     }
   }
-  
 
   return (
     <div className="space-y-10 p-10">
@@ -99,15 +103,21 @@ const CreateHeuresSup = () => {
               {/* Employé */}
               <FormField
                 control={form.control}
-                name="id_employe"
+                name="employe"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Employé</FormLabel>
                     <FormControl>
                       <select
                         {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(Number(e.target.value) || 0)} // Conversion en nombre
+                        value={field.value?.id || ""}
+                        onChange={(e) => {
+                          const selectedId = Number(e.target.value);
+                          const selectedEmploye = employes.find(
+                            (employe) => employe.id === selectedId
+                          );
+                          field.onChange(selectedEmploye || null);
+                        }}
                         className="w-full border rounded-md p-2"
                       >
                         <option value="">Sélectionnez un employé</option>
