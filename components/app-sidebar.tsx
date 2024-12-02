@@ -80,21 +80,30 @@ const data = {
       ],
     },
     {
-        title: "Conge",
-        url: "/back-office/rh/conge",
-        icon: User,
-        isActive: true,
-        items: [
-          {
-            title: "new",
-            url: "/back-office/rh/conge/new",
-          },
-          {
-            title: "conge",
-            url: "/back-office/rh/conge",
-          },
-        ],
-      },
+      title: "Avances",
+      url: "/back-office/avance/",
+      icon: BookOpen,
+      items: [
+        { title: "Liste des impayés", url: "/back-office/avance/" },
+        { title: "Nouvelle demande", url: "/back-office/avance/new" },
+      ],
+    },
+    {
+      title: "Conge",
+      url: "/back-office/rh/conge",
+      icon: User,
+      isActive: true,
+      items: [
+        {
+          title: "new",
+          url: "/back-office/rh/conge/new",
+        },
+        {
+          title: "conge",
+          url: "/back-office/rh/conge",
+        },
+      ],
+     },
   ],
   projects: [
     {

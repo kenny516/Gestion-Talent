@@ -67,17 +67,6 @@ export default function PostesPage() {
       <Card className="bg-card text-card-foreground shadow">
       <CardHeader className="border-b border-border">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/back-office/talent/identification/postes/new">
-                <Button
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2"
-                  size="sm"
-                >
-                  <Plus className="h-4 w-4" />
-              Nouveau Poste
-            </Button>
-          </Link>
-          </div>
 
           <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
