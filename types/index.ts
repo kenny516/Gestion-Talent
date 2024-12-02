@@ -251,7 +251,8 @@ export type AvanceImpaye = {
   restePaye: number;
   nom: string;
   prenom: string;
-}
+};
+
 
 //auth
 export type tokenUser = {
@@ -291,4 +292,12 @@ export type paye={
     datePaiement:string;
 }
 
-export type 
+export type PaieType = {
+  mois: number;
+  annee: number;
+  heureNormale: number;
+  heureSup: number;
+  avance: number;
+  salaireBase: number;
+  total: number;
+}
