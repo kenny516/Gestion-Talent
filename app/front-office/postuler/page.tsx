@@ -17,6 +17,17 @@ export type Poste = {
   titre: string;
   description: string;
   departement: string;
+  categoriePersonnel: string | null;
+};
+
+export type OffreEmploi = {
+  id: number;
+  description: string;
+  status: boolean;
+  datePublication: string;
+  poste: Poste;
+  nbrCandidatDm: number;
+  salaire: number | null;
 };
 
 function useCheckSessionId() {
@@ -31,22 +42,22 @@ function useCheckSessionId() {
   }, [router]);
   return null;
 }
-export default function PostesList() {
+export default function OffreEmploiList() {
   useCheckSessionId();
-  const [postes, setPostes] = useState<Poste[]>([]);
+  const [offreEmploi, setOffreEmploi] = useState<OffreEmploi[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchPostes = async () => {
+    const fetchOffreEmploi = async () => {
       try {
-        const response = await axios.get(api_url + "poste");
-        setPostes(response.data);
+        const response = await axios.get(api_url + "OffreEmploi");
+        setOffreEmploi(response.data);
       } catch (error) {
-        console.error("Erreur lors du chargement des postes :", error);
+        console.error("Erreur lors du chargement des Offre Emploi :", error);
       }
     };
 
-    fetchPostes();
+    fetchOffreEmploi();
   }, []);
 
   const handlePostuler = (id: number) => {
@@ -55,18 +66,22 @@ export default function PostesList() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
-      {postes.map((poste) => (
-        <Card key={poste.id}>
+      {offreEmploi.map((offre) => (
+        <Card key={offre.id}>
           <CardHeader>
-            <h3 className="text-lg font-bold">{poste.titre}</h3>
-            <p className="text-sm text-muted-foreground">{poste.departement}</p>
+            <h3 className="text-lg font-bold">{offre.poste.titre}</h3>
+            <p className="text-sm text-muted-foreground">{offre.poste.departement}</p>
+            <p className="text-sm text-muted-foreground">Reste places disponible : {offre.nbrCandidatDm}</p>
+            <p className="text-sm text-muted-foreground">Salaire : {offre.salaire}</p>
+            <p className="text-slate-600">Date de publication : {offre.datePublication}</p>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">{poste.description}</p>
+            <p className="text-sm">{offre.description}</p>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button onClick={() => handlePostuler(poste.id)}>Postuler</Button>
+            <Button onClick={() => handlePostuler(offre.id)}>Postuler</Button>
           </CardFooter>
+          
         </Card>
       ))}
     </div>
