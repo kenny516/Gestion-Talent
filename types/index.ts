@@ -291,4 +291,3 @@ export type paye={
     datePaiement:string;
 }
 
-export type 
