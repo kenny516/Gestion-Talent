@@ -32,6 +32,20 @@ export type Candidat = {
   ];
 };
 
+export type CandidatDisplay = {
+    id: number;
+    candidatId: number;
+    nom: string;
+    prenom: string;
+    email: string;
+    telephone?: string;
+    datePostulation: string;
+    offreStatus: boolean;
+    status:string;
+    poste: Poste;
+  };
+
+
 export type TypeNote = {
   id: number;
   nomType: string;
@@ -165,6 +179,27 @@ export type CandidaturData = {
   notes: NoteCandidat[];
   progress: number;
 };
+
+export type offreEmploi = {
+    id:number;
+    description:string;
+    status:boolean;
+    datePublication:string;
+    poste: Poste;
+    nbrCandidatDm:number;
+    salaire:number;
+}
+
+export type Postulation  = {
+    id:number;
+    offreEmploi:offreEmploi;
+    status: string;
+    datePostulation: string;
+    notes:NoteCandidat[];
+}
+
+
+
 export type CandidatDetail = {
   id: number;
   nom: string;
@@ -174,22 +209,8 @@ export type CandidatDetail = {
   formations: Formation[];
   experiences: Experience[];
   diplomes: Diplome[];
-  notes: NoteCandidat[];
-  competences: [CompetencesCandidats];
-  postulations: [
-    {
-      id: 1;
-      candidat: null;
-      poste: {
-        id: number;
-        titre: string;
-        description: string;
-        departement: string;
-      };
-      status: "En attente" | "Retenu" | "Refusé" | "Embauché";
-      datePostulation: string;
-    }
-  ];
+  postulations:Postulation[];
+  competences:CompetencesCandidats[];
   progress: number;
 };
 export type PosteCompetenceData = {
