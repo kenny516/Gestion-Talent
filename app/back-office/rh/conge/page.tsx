@@ -43,6 +43,7 @@ export default function CongeTable() {
       try {
         const response = await axios.get(api_url + "conge");
         setConges(response.data as Conge[]);
+        console.log(JSON.stringify(response));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching conges:", error);
@@ -55,9 +56,9 @@ export default function CongeTable() {
   const filteredConges = conges.filter((conge) => {
     return (
       (selectedStatus === "Tous" || conge.status === selectedStatus) &&
-      conge.employe.poste.titre
+/*      conge.employe.Contrat?.poste.titre
         .toLowerCase()
-        .includes(posteSearch.toLowerCase()) &&
+        .includes(posteSearch.toLowerCase()) &&*/
       conge.employe.nom.toLowerCase().includes(employeSearch.toLowerCase())
     );
   });
@@ -169,7 +170,7 @@ export default function CongeTable() {
                       <TableCell>{conge.dateDebut}</TableCell>
                       <TableCell>{conge.dateFin}</TableCell>
                       <TableCell>{conge.duree}</TableCell>
-                      <TableCell>{conge.employe.poste.titre}</TableCell>
+                      <TableCell>{conge.employe.Contrat?.poste.titre}</TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"

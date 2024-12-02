@@ -7,6 +7,7 @@ export type Poste = {
   titre: string;
   description: string;
   departement: string;
+  categoriePersonnel: CategoriePersonnel;
 };
 
 export type Candidat = {
@@ -29,7 +30,6 @@ export type Candidat = {
       datePostulation: string;
     }
   ];
-
 };
 
 export type TypeNote = {
@@ -48,6 +48,29 @@ export type NoteCandidatForm = {
   note: number;
 };
 
+export type CategoriePersonnel = {
+  id: number;
+  nom: string;
+  description: string;
+};
+
+export type TypeContrat = {
+  id: number;
+  nomType: string;
+  dureeMois: number;
+};
+
+export type Contrat = {
+  id: number;
+  employe: Employe;
+  poste: Poste;
+  typeContrat: TypeContrat;
+  dateDebut: string;
+  dateFin: string;
+  salaire: number;
+  tauxHoraire: number;
+};
+
 export type Employe = {
   id: number;
   nom: string;
@@ -55,8 +78,7 @@ export type Employe = {
   email: string;
   telephone?: string;
   dateEmbauche?: string;
-  poste: Poste;
-  competences?: Competence[];
+  Contrat:Contrat;
 };
 
 export type PostEmploye = {
@@ -65,12 +87,6 @@ export type PostEmploye = {
   idPoste: number;
   dateDebut: string;
   dateFin?: string;
-};
-
-export type TypeContrat = {
-  id: number;
-  nomType: string;
-  dureeMois?: number;
 };
 
 export type ContratEmploye = {
@@ -96,9 +112,9 @@ export type CompetencesEmployes = Competence & {
   niveau: 1 | 2 | 3 | 4 | 5;
 };
 
-export type CompetencesCandidats =  {
+export type CompetencesCandidats = {
   candidat_id: number;
-  competence :Competence
+  competence: Competence;
   niveau: 0 | 1 | 2 | 3 | 4 | 5;
 };
 export type NotificationType = {
@@ -159,7 +175,7 @@ export type CandidatDetail = {
   experiences: Experience[];
   diplomes: Diplome[];
   notes: NoteCandidat[];
-  competences:[ CompetencesCandidats];
+  competences: [CompetencesCandidats];
   postulations: [
     {
       id: 1;
@@ -209,22 +225,21 @@ export type tokenUser = {
 };
 // conge
 export type TypeConge = {
-    id: number;
-    nom: string;
-    estPaye: boolean;
-    cumulable: boolean;
-    dureeMax: number;
-  };
- export type Conge = {
-    id?: number;
-    idTypeConge: TypeConge;
-    dateDebut: string;
-    dateFin: string;
-    duree: number;
-    status: string;
-    employe: Employe;
-  };
-
+  id: number;
+  nom: string;
+  estPaye: boolean;
+  cumulable: boolean;
+  dureeMax: number;
+};
+export type Conge = {
+  id?: number;
+  idTypeConge: TypeConge;
+  dateDebut: string;
+  dateFin: string;
+  duree: number;
+  status: string;
+  employe: Employe;
+};
 
 // Optional function and trigger types to represent trigger and functions in TypeScript (informative, not executable)
 export type EvaluerStatutCandidat = () => void;
