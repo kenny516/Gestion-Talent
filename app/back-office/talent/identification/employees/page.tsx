@@ -40,7 +40,7 @@ export default function EmployeesPage() {
   const itemsPerPage = 10;
 
   const filteredEmployees = employees.filter((employe) =>
-    employe.Contrat?.poste.titre.toLowerCase().includes(posteSearch.toLowerCase())
+    employe.contrat.poste.titre.toLowerCase().includes(posteSearch.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
@@ -105,7 +105,6 @@ export default function EmployeesPage() {
                   <TableHead>Date de candidature</TableHead>
                   <TableHead>Poste</TableHead>
                   <TableHead>Departement</TableHead>
-                  <TableHead>Compétences</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -119,17 +118,10 @@ export default function EmployeesPage() {
                       <TableCell>{employe.email}</TableCell>
                       <TableCell>{employe.telephone || "N/A"}</TableCell>
                       <TableCell>{employe.dateEmbauche || "N/A"}</TableCell>
-                      <TableCell>{employe.Contrat?.poste.titre || "N/A"}</TableCell>
+                      <TableCell>{employe.contrat.poste.titre || "N/A"}</TableCell>
                       <TableCell>
-                        {employe.Contrat?.poste.departement || "N/A"}
+                        {employe.contrat.poste.departement || "N/A"}
                       </TableCell>
-                      ${/*}                       <TableCell>
-                      {employe.competences && employe.competences.length > 0
-                          ? employe.competences.map((comp) => (
-                              <div key={comp.id}>{comp.nom}</div>
-                            ))
-                          : "Aucune compétence"}
-                      </TableCell>${*/}
                     </TableRow>
                   ))
                 )}
