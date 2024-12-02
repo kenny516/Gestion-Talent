@@ -68,14 +68,14 @@ export default function EmployeesPage() {
   // Apply combined search and category filtering
   const filteredEmployees = employees.filter((employe) => {
     // Match search criteria
-    const matchesSearch = employe.contrat.poste.titre
+    const matchesSearch = employe?.contrat?.poste.titre
       .toLowerCase()
       .includes(posteSearch.toLowerCase());
 
     // Match category filter or include all if idCateg is 0
     const matchesCategory =
       currentCategIndex === 0 ||
-      employe.contrat.poste.categoriePersonnel.id === currentCategIndex;
+      employe?.contrat?.poste.categoriePersonnel.id === currentCategIndex;
 
     return matchesSearch && matchesCategory;
   });
@@ -184,7 +184,7 @@ export default function EmployeesPage() {
                       <TableCell>{employe.telephone || "N/A"}</TableCell>
                       <TableCell>{employe.dateEmbauche || "N/A"}</TableCell>
                       <TableCell>
-                        {employe.contrat.poste.titre || "N/A"}
+                        {employe?.contrat?.poste.titre || "N/A"}
                       </TableCell>
                       <TableCell>
                         {employe?.contrat?.poste.departement || "N/A"}
