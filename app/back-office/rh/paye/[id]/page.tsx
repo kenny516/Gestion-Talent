@@ -39,7 +39,7 @@ export default function PayeForm({
 }: {
   params: Promise<{ id: number }>;
 }) {
-  const [employeId, setEmployeId] = useState<number | string>(0);
+  const [employeId, setEmployeId] = useState<number>(0);
   const { toast } = useToast();
 
   useEffect(() => {
