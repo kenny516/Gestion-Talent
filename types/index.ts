@@ -1,5 +1,7 @@
 // export types for individual tables
 
+import { number } from "zod";
+
 export const api_url = process.env.NEXT_PUBLIC_API_URL; // export types for each table in the database
 // Types for each table in the database
 export type Poste = {
@@ -282,3 +284,11 @@ export type TriggerEvaluerStatutCandidat = {
   table: "CompetencesCandidats";
   action: EvaluerStatutCandidat;
 };
+
+
+export type paye={
+    EmployeId: number;
+    datePaiement:string;
+}
+
+export type 
