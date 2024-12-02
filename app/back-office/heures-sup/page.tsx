@@ -39,7 +39,7 @@ export default function HeuresSupPage() {
   // Fetch heures supplémentaires from the API
   const fetchHeuresSup = async () => {
     try {
-      const response = await axios.get(`${api_url}heures-sup?upcoming=true`); // Assurez-vous que l'API filtre correctement
+      const response = await axios.get(api_url + "heures-sup/after-today"); // Assurez-vous que l'API filtre correctement
       setHeuresSup(response.data);
       setLoading(false);
     } catch (error) {

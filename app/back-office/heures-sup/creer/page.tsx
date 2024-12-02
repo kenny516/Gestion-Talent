@@ -25,8 +25,6 @@ const heuresSupSchema = z.object({
   id_employe: z.number({ required_error: "L'identifiant de l'employé est requis" }),
   date_debut: z.string().min(1, { message: "La date de début est requise" }),
   date_fin: z.string().min(1, { message: "La date de fin est requise" }),
-  total_heures_sup: z.number().nonnegative().optional(),
-  montant: z.number().positive({ message: "Le montant est requis" }),
 });
 
 type HeuresSupFormData = z.infer<typeof heuresSupSchema>;
@@ -41,8 +39,6 @@ const CreateHeuresSup = () => {
       id_employe: 0,
       date_debut: "",
       date_fin: "",
-      total_heures_sup: undefined,
-      montant: 0,
     },
   });
 
@@ -60,8 +56,9 @@ const CreateHeuresSup = () => {
   }, []);
 
   async function onSubmit(values: HeuresSupFormData) {
+    console.log("Données à envoyer :", values); // Ajout de log
+    console.log("URL API : ", api_url + "heures_sup");
     try {
-      console.log("Données envoyées :", JSON.stringify(values, null, 2));
       await axios.post(api_url + "heures_sup", values, {
         headers: {
           "Content-Type": "application/json",
@@ -73,14 +70,11 @@ const CreateHeuresSup = () => {
         description: "Heures supplémentaires enregistrées avec succès!",
       });
       form.reset();
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! une erreur.",
-        description: error.response?.data || "Erreur lors de l'enregistrement.",
-      });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi :", error); // Ajout de log pour les erreurs
     }
   }
+  
 
   return (
     <div className="space-y-10 p-10">
@@ -112,12 +106,14 @@ const CreateHeuresSup = () => {
                     <FormControl>
                       <select
                         {...field}
+                        value={field.value || ""}
+                        onChange={(e) => field.onChange(Number(e.target.value) || 0)} // Conversion en nombre
                         className="w-full border rounded-md p-2"
                       >
                         <option value="">Sélectionnez un employé</option>
                         {employes.map((employe) => (
                           <option key={employe.id} value={employe.id}>
-                            {employe.nom}
+                            {employe.nom} {employe.prenom}
                           </option>
                         ))}
                       </select>
@@ -149,21 +145,6 @@ const CreateHeuresSup = () => {
                     <FormLabel>Date de fin</FormLabel>
                     <FormControl>
                       <Input type="datetime-local" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Montant */}
-              <FormField
-                control={form.control}
-                name="montant"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Montant</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="Montant en Ariary" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
