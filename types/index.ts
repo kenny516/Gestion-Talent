@@ -1,6 +1,5 @@
 // export types for individual tables
 
-import { number } from "zod";
 
 export const api_url = process.env.NEXT_PUBLIC_API_URL; // export types for each table in the database
 // Types for each table in the database
@@ -94,7 +93,7 @@ export type Employe = {
   email: string;
   telephone?: string;
   dateEmbauche?: string;
-  contrat:Contrat;
+  contrat?:Contrat;
 };
 
 export type PostEmploye = {

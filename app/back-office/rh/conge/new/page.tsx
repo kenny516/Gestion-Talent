@@ -83,8 +83,7 @@ export default function CongéForm() {
           id: values.employe_id,
           nom: "",
           prenom: "",
-          email: "",
-          poste: { id: 0, titre: "", description: "", departement: "" },
+          email: ""
         },
         idTypeConge:{
             id: values.type_conge_id,
@@ -102,6 +101,7 @@ export default function CongéForm() {
         ),
         status: "En attente",
       };
+      console.log(newConge)
       const response = await axios.post(api_url + "conge", newConge, {
         headers: {
           "Content-Type": "application/json",
