@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { api_url, Candidat } from "@/types";
+import { api_url, CandidatDisplay } from "@/types";
 import axios from "axios";
 import CandidatTable from "./(component)/candidat-table";
 
 // Fetch candidates
-const fetchCandidates = async (): Promise<Candidat[]> => {
+const fetchCandidates = async (): Promise<CandidatDisplay[]> => {
   try {
     const response = await axios.get(api_url + "candidat");
-    return response.data as Candidat[];
+    return response.data as CandidatDisplay[];
   } catch (error) {
     console.error("Error fetching candidates:", error);
     return [];
@@ -17,7 +17,7 @@ const fetchCandidates = async (): Promise<Candidat[]> => {
 };
 
 export default function CandidatesPage() {
-  const [candidates, setCandidates] = useState<Candidat[]>([]);
+  const [candidates, setCandidates] = useState<CandidatDisplay[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

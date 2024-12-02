@@ -1,7 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, BotMessageSquare, Save, User } from "lucide-react";
+import {
+  BookOpen,
+  BotMessageSquare,
+  HandCoins,
+  TreePalm,
+  User,
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
@@ -82,18 +88,17 @@ const data = {
     },
     {
       title: "Avances",
-      url: "/back-office/avance/",
-      icon: BookOpen,
+      url: "/back-office/rh/avance/",
+      icon: HandCoins,
       items: [
-        { title: "Liste des impayés", url: "/back-office/avance/" },
-        { title: "Nouvelle demande", url: "/back-office/avance/new" },
+        { title: "Liste des impayés", url: "/back-office/rh/avance/" },
+        { title: "Nouvelle demande", url: "/back-office/rh/avance/new" },
       ],
     },
     {
       title: "Conge",
       url: "/back-office/rh/conge",
-      icon: User,
-      isActive: true,
+      icon: TreePalm,
       items: [
         {
           title: "new",
@@ -104,7 +109,7 @@ const data = {
           url: "/back-office/rh/conge",
         },
       ],
-     },
+    },
   ],
   projects: [
     {

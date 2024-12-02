@@ -15,6 +15,7 @@ import { PageHeader } from "@/components/page-header";
 import {  Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
+import Link from "next/link";
 
 // Function to fetch employees from the API
 const fetchEmployees = async (): Promise<Employe[]> => {
@@ -105,6 +106,9 @@ export default function EmployeesPage() {
                   <TableHead>Date de candidature</TableHead>
                   <TableHead>Poste</TableHead>
                   <TableHead>Departement</TableHead>
+                  <TableHead className="font-semibold text-muted-foreground">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -121,6 +125,19 @@ export default function EmployeesPage() {
                       <TableCell>{employe.contrat.poste.titre || "N/A"}</TableCell>
                       <TableCell>
                         {employe.contrat.poste.departement || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/back-office/rh/paye/${employe.id}`}
+                        >
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="hover:bg-muted"
+                          >
+                            Paye
+                          </Button>
+                        </Link>
                       </TableCell>
                     </TableRow>
                   ))

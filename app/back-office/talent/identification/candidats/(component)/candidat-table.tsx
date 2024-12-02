@@ -18,12 +18,12 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { Candidat } from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 import { getStatusColor } from "@/components/ui/code-color";
 import {  Search } from "lucide-react";
+import { CandidatDisplay } from "@/types";
 
 const CandidatTable = ({
   title,
@@ -33,7 +33,7 @@ const CandidatTable = ({
 }: {
   title: string;
   description: string;
-  candidats: Candidat[];
+  candidats: CandidatDisplay[];
   loading: boolean;
 }) => {
   const [selectedStatus, setSelectedStatus] = useState<
@@ -44,10 +44,9 @@ const CandidatTable = ({
   const itemsPerPage = 10;
 
   const filteredCandidates = candidats.filter((candidate) => {
-    const firstPostulation = candidate.postulations?.[0];
     return (
-      (selectedStatus === "Tous" || firstPostulation?.status === selectedStatus) &&
-      firstPostulation?.poste?.departement
+      (selectedStatus === "Tous" || candidate.status === selectedStatus) &&
+      candidate.poste.departement
         ?.toLowerCase()
         .includes(posteSearch.toLowerCase())
     );
@@ -151,23 +150,23 @@ const CandidatTable = ({
                         {candidate.email}
                       </TableCell>
                       <TableCell>{candidate.telephone || "N/A"}</TableCell>
-                      <TableCell>{candidate.postulations[0].datePostulation+""}</TableCell>
+                      <TableCell>{candidate.datePostulation+""}</TableCell>
                       <TableCell>
-                        {candidate.postulations[0].poste?.departement || "N/A"}
+                        {candidate.poste?.departement || "N/A"}
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"
                           className={`${getStatusColor(
-                            candidate.postulations[0].status || "En attente"
+                            candidate.status || "En attente"
                           )}`}
                         >
-                          {candidate.postulations[0].status || "En attente"}
+                          {candidate.status || "En attente"}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Link
-                          href={`/back-office/talent/identification/candidats/${candidate.id}`}
+                          href={`/back-office/talent/identification/candidats/${candidate.candidatId}`}
                         >
                           <Button
                             variant="outline"
