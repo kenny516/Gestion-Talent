@@ -79,6 +79,15 @@ const data = {
         { title: "suivie", url: "/back-office/talent/development/suivie" },
       ],
     },
+    {
+      title: "Avances",
+      url: "/back-office/avance/",
+      icon: BookOpen,
+      items: [
+        { title: "Liste des impayés", url: "/back-office/avance/" },
+        { title: "Nouvelle demande", url: "/back-office/avance/new" },
+      ],
+    }
   ],
   projects: [
     {
