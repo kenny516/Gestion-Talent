@@ -21,12 +21,11 @@ import Link from "next/link";
 
 interface HeureSup {
   id: number;
-  id_employe: number;
+  employe_nom: string; // Nom de l'employé uniquement
   date_debut: string;
   date_fin: string;
-  total_heures_sup: number;
-  montant: number;
-  employe_nom: string; // Assurez-vous que l'API renvoie le nom de l'employé
+  total_heures_sup: number | null;
+  montant: number | null;
 }
 
 export default function HeuresSupPage() {
@@ -39,8 +38,17 @@ export default function HeuresSupPage() {
   // Fetch heures supplémentaires from the API
   const fetchHeuresSup = async () => {
     try {
-      const response = await axios.get(api_url + "heures-sup/after-today"); // Assurez-vous que l'API filtre correctement
-      setHeuresSup(response.data);
+      const response = await axios.get(api_url + "heures-sup/after-today");
+      // Mappage des données pour ne garder que le nom de l'employé
+      const mappedData = response.data.map((heure: any) => ({
+        id: heure.id,
+        employe_nom: heure.employe.nom, // Utilisation du nom de l'employé
+        date_debut: heure.dateDebut,
+        date_fin: heure.dateFin,
+        total_heures_sup: heure.totalHeuresSup,
+        montant: heure.montant,
+      }));
+      setHeuresSup(mappedData);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching heures sup:", error);
@@ -124,8 +132,8 @@ export default function HeuresSupPage() {
                     <TableCell>{heure.employe_nom}</TableCell>
                     <TableCell>{new Date(heure.date_debut).toLocaleString()}</TableCell>
                     <TableCell>{new Date(heure.date_fin).toLocaleString()}</TableCell>
-                    <TableCell>{heure.total_heures_sup.toFixed(2)} h</TableCell>
-                    <TableCell>{heure.montant.toFixed(2)} €</TableCell>
+                    <TableCell>{heure.total_heures_sup?.toFixed(2)} h</TableCell>
+                    <TableCell>{heure.montant ? heure.montant.toFixed(2) : "N/A"} €</TableCell>
                   </TableRow>
                 ))
               )}
