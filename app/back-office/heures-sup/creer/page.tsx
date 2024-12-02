@@ -27,8 +27,8 @@ const heuresSupSchema = z.object({
       id: z.number()
     })
     .nullable(),
-  date_debut: z.string().min(1, { message: "La date de début est requise" }),
-  date_fin: z.string().min(1, { message: "La date de fin est requise" }),
+  dateDebut: z.string().min(1, { message: "La date de début est requise" }),
+  dateFin: z.string().min(1, { message: "La date de fin est requise" }),
 });
 
 type HeuresSupFormData = z.infer<typeof heuresSupSchema>;
@@ -41,8 +41,8 @@ const CreateHeuresSup = () => {
     resolver: zodResolver(heuresSupSchema),
     defaultValues: {
       employe: null,
-      date_debut: "",
-      date_fin: "",
+      dateDebut: "",
+      dateFin: "",
     },
   });
 
@@ -134,7 +134,7 @@ const CreateHeuresSup = () => {
               {/* Dates */}
               <FormField
                 control={form.control}
-                name="date_debut"
+                name="dateDebut"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Date de début</FormLabel>
@@ -147,7 +147,7 @@ const CreateHeuresSup = () => {
               />
               <FormField
                 control={form.control}
-                name="date_fin"
+                name="dateFin"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Date de fin</FormLabel>
