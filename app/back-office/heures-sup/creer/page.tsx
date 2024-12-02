@@ -62,7 +62,7 @@ const CreateHeuresSup = () => {
   async function onSubmit(values: HeuresSupFormData) {
     try {
       console.log("Données à envoyer :", values);
-      await axios.post(api_url + "heures_sup", values, {
+      await axios.post(api_url + "heures-sup", values, {
         headers: {
           "Content-Type": "application/json",
         },
