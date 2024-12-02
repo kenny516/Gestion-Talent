@@ -16,40 +16,56 @@ import { PageHeader } from "@/components/page-header";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 import { Link, Plus, Search } from "lucide-react";
 import axios from "axios";
-import { api_url, AvanceImpaye } from "@/types"; // Ensure the type is imported correctly
+import { api_url, PaieType } from "@/types"; // Ensure the type is imported correctly
 
-export default function AvancePage() {
-  const [avances, setAvances] = useState<AvanceImpaye[]>([]); // Explicitly type the state
+export default function AvancePage({
+  params,
+}: {
+  params: Promise<{ id: number }>;
+}) {
+  const [id, setId] = useState<number | null>(null);
+  const [paies, setPaies] = useState<PaieType[]>([]); // Explicitly type the state
   const [loading, setLoading] = useState(true);
-  const [avanceSearch, setAvanceSearch] = useState("");
+  const [paieSearch, setPaieSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Fetch avances from the API
-  const fetchAvances = async () => {
-    try {
-      const response = await axios.get(api_url + "avance"); // Adjust this URL to your actual API endpoint
-      setAvances(response.data as AvanceImpaye[]); // Explicitly cast the response data
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching avances:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchParams = async () => {
+      const resolvedParams = await params; // Await the params Promise
+      setId(resolvedParams.id);
+    };
+
+    fetchParams();
+  }, [params]);
 
   useEffect(() => {
-    fetchAvances();
-  }, []);
+    if (!id) return;
 
-  // Filter avances based on search term
-  const filteredAvances = avances.filter((avance) =>
-    (avance.nom + " " + avance.prenom)
-      .toLowerCase()
-      .includes(avanceSearch.toLowerCase())
-  );
+    // Fetch avances from the API
+    const fetchPaies = async () => {
+      try {
+        const response = await axios.get(api_url + `paye/${id}`); // Adjust this URL to your actual API endpoint
+        setPaies(response.data as PaieType[]); // Explicitly cast the response data
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching paies :", error);
+      }
+    };
+
+    fetchPaies();
+  }, [id]);
+
+  paies.sort((a, b) => {
+    if (b.annee !== a.annee) {
+      return b.annee - a.annee; // Sort by annee descending
+    }
+    return b.mois - a.mois; // If annee is equal, sort by mois descending
+  });
 
   // Pagination calculations
-  const totalPages = Math.ceil(filteredAvances.length / itemsPerPage);
-  const paginatedAvances = filteredAvances.slice(
+  const totalPages = Math.ceil(paies.length / itemsPerPage);
+  const paginatedAvances = paies.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -59,17 +75,24 @@ export default function AvancePage() {
     setCurrentPage(newPage);
   };
 
+  function getMonthName(monthNumber: number): string {
+    const date = new Date(2000, monthNumber - 1); // Months are 0-indexed
+    const monthName = new Intl.DateTimeFormat("fr-FR", {
+      month: "long",
+    }).format(date);
+    return monthName.charAt(0).toUpperCase() + monthName.slice(1); // Capitalize the first letter
+  }
+
   return (
     <div className="space-y-6 p-10">
       <PageHeader
-        title="Liste des Avances Impayées"
-        description="Affiche la liste des avances en cours de paiement."
+        title="Liste des paies"
+        description="Affiche la liste des paies d'un employé."
       />
       <Card className="bg-card text-card-foreground shadow">
         <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            
-            <div className="relative w-full sm:w-64">
+            {/* <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
@@ -81,7 +104,7 @@ export default function AvancePage() {
                 }}
                 className="pl-8 bg-background border-input"
               />
-            </div>
+            </div> */}
           </div>
         </CardHeader>
 
@@ -89,30 +112,30 @@ export default function AvancePage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nom</TableHead>
-                <TableHead>Prénom</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Montant</TableHead>
-                <TableHead>Pourcentage</TableHead>
-                <TableHead>Raison</TableHead>
-                <TableHead>Reste à Payer</TableHead>
+                <TableHead>Mois</TableHead>
+                <TableHead>Année</TableHead>
+                <TableHead>Heures normales</TableHead>
+                <TableHead>Heures supplémentaires</TableHead>
+                <TableHead>Avance</TableHead>
+                <TableHead>Salaire de base</TableHead>
+                <TableHead>Total</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <SkeletonGeneralise rows={5} cols={7} />
               ) : (
-                paginatedAvances.map((avance) => (
-                  <TableRow key={avance.id}>
-                    <TableCell>{avance.nom}</TableCell>
-                    <TableCell>{avance.prenom}</TableCell>
-                    <TableCell>{avance.dateAvance}</TableCell>
-                    <TableCell>{avance.montant.toLocaleString("fr-FR")}</TableCell>
-                    <TableCell>{avance.pourcentageDebitable}%</TableCell>
-                    <TableCell>{avance.raison}</TableCell>
+                paies.map((paie) => (
+                  <TableRow>
+                    <TableCell>{getMonthName(paie.mois)}</TableCell>
+                    <TableCell>{paie.annee}</TableCell>
+                    <TableCell>{paie.heureNormale}</TableCell>
+                    <TableCell>{paie.heureSup}</TableCell>
+                    <TableCell>{paie.avance.toLocaleString("fr-FR")}</TableCell>
                     <TableCell>
-                      {avance.restePaye.toLocaleString("fr-FR")}
+                      {paie.salaireBase.toLocaleString("fr-FR")}
                     </TableCell>
+                    <TableCell>{paie.total.toLocaleString("fr-FR")}</TableCell>
                   </TableRow>
                 ))
               )}
