@@ -28,7 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function AvanceForm() {
   const [employes, setEmployes] = useState([
-    { id: 1, nom: "Rakoto", prenom: "Jean" },
+    // { id: 1, nom: "Rakoto", prenom: "Jean" },
   ]);
   const [minMaxPercent, setminMaxPercent] = useState({ min: 0, max: 100 });
   const [minMaxMontant, setminMaxMontant] = useState({ min: 0, max: 100 });
@@ -38,7 +38,7 @@ export default function AvanceForm() {
   useEffect(() => {
     const fetchEmployes = async () => {
       try {
-        const response = await axios.get(`${api_url}avance/employe`);
+        const response = await axios.get(`${api_url}employe`);
         setEmployes(response.data);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -65,7 +65,7 @@ export default function AvanceForm() {
       }
     };
 
-    // fetchEmployes();
+    fetchEmployes();
     fetchminMaxPercent();
     fetchminMaxMontant();
   }, []);
@@ -175,7 +175,7 @@ export default function AvanceForm() {
                               key={employe.id}
                               value={employe.id.toString()}
                             >
-                              {employe.nom} {employe.prenom}
+                              {employe.prenom} {employe.nom}
                             </SelectItem>
                           ))}
                         </SelectContent>
