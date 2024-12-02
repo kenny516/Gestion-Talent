@@ -218,6 +218,18 @@ export type suivie = {
   currentStep: number;
 };
 
+export type AvanceImpaye = {
+  id: number;
+  idEmploye: number;
+  montant: number;
+  pourcentageDebitable: number;
+  dateAvance: string;
+  raison: string;
+  restePaye: number;
+  nom: string;
+  prenom: string;
+}
+
 //auth
 export type tokenUser = {
   id: number;
