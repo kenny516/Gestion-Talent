@@ -80,6 +80,22 @@ const data = {
         { title: "suivie", url: "/back-office/talent/development/suivie" },
       ],
     },
+    {
+        title: "Conge",
+        url: "/back-office/rh/conge",
+        icon: User,
+        isActive: true,
+        items: [
+          {
+            title: "new",
+            url: "/back-office/rh/conge/new",
+          },
+          {
+            title: "conge",
+            url: "/back-office/rh/conge",
+          },
+        ],
+      },
   ],
   projects: [
     {
