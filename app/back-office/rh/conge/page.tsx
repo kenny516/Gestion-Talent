@@ -170,7 +170,7 @@ export default function CongeTable() {
                       <TableCell>{conge.dateDebut}</TableCell>
                       <TableCell>{conge.dateFin}</TableCell>
                       <TableCell>{conge.duree}</TableCell>
-                      <TableCell>{conge.employe.Contrat?.poste.titre}</TableCell>
+                      <TableCell>{conge.employe.contrat.poste.titre}</TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"

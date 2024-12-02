@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
-import { Timer, Send, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
+import { Send, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { generateEvaluation, generateQuestion } from "@/app/api/ai/route";
 import { api_url } from "@/types";
