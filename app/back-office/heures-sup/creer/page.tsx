@@ -24,9 +24,7 @@ import Link from "next/link";
 const heuresSupSchema = z.object({
   employe: z
     .object({
-      id: z.number(),
-      nom: z.string(),
-      prenom: z.string(),
+      id: z.number()
     })
     .nullable(),
   date_debut: z.string().min(1, { message: "La date de début est requise" }),
