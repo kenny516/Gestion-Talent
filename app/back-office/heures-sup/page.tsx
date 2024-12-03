@@ -133,7 +133,7 @@ export default function HeuresSupPage() {
                     <TableCell>{new Date(heure.date_debut).toLocaleString()}</TableCell>
                     <TableCell>{new Date(heure.date_fin).toLocaleString()}</TableCell>
                     <TableCell>{heure.total_heures_sup?.toFixed(2)} h</TableCell>
-                    <TableCell>{heure.montant ? heure.montant.toFixed(2) : "N/A"} €</TableCell>
+                    <TableCell>{heure.montant ? heure.montant.toFixed(2) : "N/A"} Ariary</TableCell>
                   </TableRow>
                 ))
               )}
