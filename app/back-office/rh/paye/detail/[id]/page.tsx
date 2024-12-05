@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { api_url } from "@/types";
+import { api_url, FichePaye } from "@/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -23,13 +23,13 @@ interface PayrollEntry {
   designation: string;
   nombre?: string | number;
   taux?: number;
-  montant: number;
+  montant?: number;
 }
 
 interface IRSABracket {
   label: string;
   taux: number;
-  montant: number;
+  montant?: number;
 }
 
 export default function Payslip({
@@ -38,7 +38,7 @@ export default function Payslip({
   params: Promise<{ id: number }>;
 }) {
   const [payeId, setPayeId] = useState<number>(0);
-  const [dataPaye, setDataPaye] = useState<any>([]);
+  const [dataPaye, setDataPaye] = useState<FichePaye>();
 
   useEffect(() => {
     const getEmpId = async () => {
@@ -51,23 +51,23 @@ export default function Payslip({
   useEffect(()=>{
     const fetch = async () => {
         const response = axios.get(api_url+`paye/${payeId}`);
-        const data = (await response).data;
-        setDataPaye(data as any);
+        const data : FichePaye = (await response).data as FichePaye;
+        setDataPaye(data);
     };
     fetch();
   })
 
   const payrollData = {
-    employeeName: "RAZAFIARISON Laza",
-    matricule: "627/TNR",
+    employeeName: dataPaye?.nom,
+    matricule: dataPaye?.id,
     classification: "HC",
-    fonction: "MPITOLONA",
+    fonction: dataPaye?.posteTitre,
     cnaps: "",
-    dateEmbauche: "03/25/2011",
+    dateEmbauche: dataPaye?.dateEmbauche,
     anciennete: "12 an(s) 5 mois et 10 jour(s)",
-    salaireBase: 4083409.09,
-    tauxJournalier: 136114.0,
-    tauxHoraire: 23559.0,
+    salaireBase: dataPaye?.contratSalaire,
+    tauxJournalier: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 ,
+    tauxHoraire: dataPaye?.contratTauxHoraire,
     indice: 17660.0,
   };
 
@@ -75,42 +75,22 @@ export default function Payslip({
     {
       designation: "Err :502",
       nombre: "1 mois",
-      taux: 136114.0,
-      montant: 4083409.09,
+      taux: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 ,
+      montant: dataPaye?.contratSalaire,
     },
-    { designation: "Absences déductibles", taux: 136114.0, montant: 0.0 },
+    { designation: "Absences déductibles", taux:dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: dataPaye?.payeNbHeureAbs },
     { designation: "Primes de rendement", montant: 0 },
     { designation: "Primes d'ancienneté", montant: 0 },
     {
-      designation: "Heures supplémentaires majorées de 30%",
-      taux: 30627.0,
-      montant: 0.0,
-    },
-    {
-      designation: "Heures supplémentaires majorées de 40%",
-      taux: 32983.0,
-      montant: 0.0,
-    },
-    {
-      designation: "Heures supplémentaires majorées de 50%",
-      taux: 35339.0,
-      montant: 0.0,
-    },
-    {
-      designation: "Heures supplémentaires majorées de 100%",
-      taux: 47118.0,
-      montant: 0.0,
-    },
-    {
-      designation: "Majoration pour heures de nuit",
-      taux: 7068.0,
+      designation: "Heures supplémentaires total",
+      taux: dataPaye?.payeHeureSup,
       montant: 0.0,
     },
     { designation: "Primes diverses", montant: 0 },
     { designation: "Rappels sur période antérieure", montant: 0 },
-    { designation: "Droits de congés", taux: 136114.0, montant: 0.0 },
-    { designation: "Droits de préavis", taux: 136114.0, montant: 0.0 },
-    { designation: "Indemnités de licenciement", taux: 136114.0, montant: 0.0 },
+    { designation: "Droits de congés", taux: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: 0.0 },
+    { designation: "Droits de préavis", taux: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: 0.0 },
+    { designation: "Indemnités de licenciement", taux:dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: 0.0 },
   ];
 
   const irsaBrackets: IRSABracket[] = [
@@ -130,10 +110,10 @@ export default function Payslip({
   ];
 
   const deductions = {
-    retenueCNaPS: 20000.0,
-    retenueSanitaire: 40834.09,
-    totalIRSA: 712015.0,
-    totalRetenues: 772849.09,
+    retenueCNaPS: dataPaye?.payeCnaps,
+    retenueSanitaire: dataPaye?.payeSanitaire,
+    totalIRSA: dataPaye?.payeIrsa,
+    totalRetenues: dataPaye?.payeTotal,
     autresIndemnites: 0,
     netAPayer: 3310560.0,
     montantImposable: 4022575.0,
@@ -167,7 +147,7 @@ export default function Payslip({
               {payrollData.cnaps}
             </p>
             <p>
-              <span className="font-medium">Date d'embauche :</span>{" "}
+              <span className="font-medium">Date dembauche :</span>{" "}
               {payrollData.dateEmbauche}
             </p>
             <p>
@@ -182,7 +162,7 @@ export default function Payslip({
             </p>
             <p>
               <span className="font-medium">Salaire de base :</span>{" "}
-              {payrollData.salaireBase.toLocaleString()}
+              {payrollData?.salaireBase?.toLocaleString()}
             </p>
             <p>
               <span className="font-medium">Taux journaliers :</span>{" "}
@@ -190,7 +170,7 @@ export default function Payslip({
             </p>
             <p>
               <span className="font-medium">Taux horaires :</span>{" "}
-              {payrollData.tauxHoraire.toLocaleString()}
+              {payrollData.tauxHoraire?.toLocaleString()}
             </p>
             <p>
               <span className="font-medium">Indice :</span>{" "}
@@ -218,7 +198,7 @@ export default function Payslip({
                   {entry.taux?.toLocaleString() || ""}
                 </TableCell>
                 <TableCell className="text-right">
-                  {entry.montant.toLocaleString()}
+                  {entry?.montant?.toLocaleString()}
                 </TableCell>
               </TableRow>
             ))}
@@ -227,7 +207,7 @@ export default function Payslip({
                 Salaire brut
               </TableCell>
               <TableCell className="text-right">
-                {payrollData.salaireBase.toLocaleString()}
+                {payrollData.salaireBase?.toLocaleString()}
               </TableCell>
             </TableRow>
           </TableBody>
@@ -240,13 +220,13 @@ export default function Payslip({
               <TableRow>
                 <TableCell colSpan={3}>Retenue CNaPS 1%</TableCell>
                 <TableCell className="text-right">
-                  {deductions.retenueCNaPS.toLocaleString()}
+                  {deductions.retenueCNaPS?.toLocaleString()}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell colSpan={3}>Retenue sanitaire</TableCell>
                 <TableCell className="text-right">
-                  {deductions.retenueSanitaire.toLocaleString()}
+                  {deductions.retenueSanitaire?.toLocaleString()}
                 </TableCell>
               </TableRow>
               {irsaBrackets.map((bracket, index) => (
@@ -254,20 +234,20 @@ export default function Payslip({
                   <TableCell colSpan={2}>{bracket.label}</TableCell>
                   <TableCell className="text-right">{bracket.taux}%</TableCell>
                   <TableCell className="text-right">
-                    {bracket.montant.toLocaleString()}
+                    {bracket.montant?.toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}
               <TableRow className="font-medium">
                 <TableCell colSpan={3}>TOTAL IRSA</TableCell>
                 <TableCell className="text-right">
-                  {deductions.totalIRSA.toLocaleString()}
+                  {deductions.totalIRSA?.toLocaleString()}
                 </TableCell>
               </TableRow>
               <TableRow className="font-medium">
                 <TableCell colSpan={3}>Total des retenues</TableCell>
                 <TableCell className="text-right">
-                  {deductions.totalRetenues.toLocaleString()}
+                  {deductions.totalRetenues?.toLocaleString()}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -299,11 +279,11 @@ export default function Payslip({
 
       <CardFooter className="flex justify-between p-6 border-t">
         <div className="text-center">
-          <p className="font-medium mb-8">L'employeur</p>
+          <p className="font-medium mb-8">L employeur</p>
           <div className="h-[60px]"></div>
         </div>
         <div className="text-center">
-          <p className="font-medium mb-8">L'employé(e)</p>
+          <p className="font-medium mb-8">L employé(e)</p>
           <div className="h-[60px]"></div>
         </div>
       </CardFooter>

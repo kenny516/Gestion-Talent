@@ -1,6 +1,5 @@
 // export types for individual tables
 
-
 export const api_url = process.env.NEXT_PUBLIC_API_URL; // export types for each table in the database
 // Types for each table in the database
 export type Poste = {
@@ -34,18 +33,17 @@ export type Candidat = {
 };
 
 export type CandidatDisplay = {
-    id: number;
-    candidatId: number;
-    nom: string;
-    prenom: string;
-    email: string;
-    telephone?: string;
-    datePostulation: string;
-    offreStatus: boolean;
-    status:string;
-    poste: Poste;
-  };
-
+  id: number;
+  candidatId: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone?: string;
+  datePostulation: string;
+  offreStatus: boolean;
+  status: string;
+  poste: Poste;
+};
 
 export type TypeNote = {
   id: number;
@@ -93,7 +91,7 @@ export type Employe = {
   email: string;
   telephone?: string;
   dateEmbauche?: string;
-  contrat?:Contrat;
+  contrat?: Contrat;
 };
 
 export type PostEmploye = {
@@ -182,24 +180,22 @@ export type CandidaturData = {
 };
 
 export type offreEmploi = {
-    id:number;
-    description:string;
-    status:boolean;
-    datePublication:string;
-    poste: Poste;
-    nbrCandidatDm:number;
-    salaire:number;
-}
+  id: number;
+  description: string;
+  status: boolean;
+  datePublication: string;
+  poste: Poste;
+  nbrCandidatDm: number;
+  salaire: number;
+};
 
-export type Postulation  = {
-    id:number;
-    offreEmploi:offreEmploi;
-    status: string;
-    datePostulation: string;
-    notes:NoteCandidat[];
-}
-
-
+export type Postulation = {
+  id: number;
+  offreEmploi: offreEmploi;
+  status: string;
+  datePostulation: string;
+  notes: NoteCandidat[];
+};
 
 export type CandidatDetail = {
   id: number;
@@ -210,8 +206,8 @@ export type CandidatDetail = {
   formations: Formation[];
   experiences: Experience[];
   diplomes: Diplome[];
-  postulations:Postulation[];
-  competences:CompetencesCandidats[];
+  postulations: Postulation[];
+  competences: CompetencesCandidats[];
   progress: number;
 };
 export type PosteCompetenceData = {
@@ -252,7 +248,6 @@ export type AvanceImpaye = {
   prenom: string;
 };
 
-
 //auth
 export type tokenUser = {
   id: number;
@@ -285,11 +280,10 @@ export type TriggerEvaluerStatutCandidat = {
   action: EvaluerStatutCandidat;
 };
 
-
-export type paye={
-    EmployeId: number;
-    datePaiement:string;
-}
+export type paye = {
+  EmployeId: number;
+  datePaiement: string;
+};
 
 export type PaieType = {
   mois: number;
@@ -299,4 +293,36 @@ export type PaieType = {
   avance: number;
   salaireBase: number;
   total: number;
-}
+};
+
+export type FichePaye = {
+  id: number;
+  email: string;
+  nom: string;
+  prenom: string;
+  telephone: string;
+  dateEmbauche: string;
+  contratDateDebut: string;
+  contratDateFin: string;
+  contratSalaire: number;
+  contratTauxHoraire: number;
+  posteTitre: string;
+  posteDescription: string;
+  posteDepartement: string;
+  payeMois: number;
+  payeAnnee: number;
+  payeHeureNormale: number;
+  payeHeureSup: number;
+  payeMontantHeureSup: number;
+  payeSalaireBase: number;
+  payeAvance: number;
+  payeNbHeureAbs: number;
+  payeDroitConge: number;
+  payeDroitPreavis: number;
+  payeIndemnite: number;
+  payePrimeDiverse: number;
+  payeIrsa: number;
+  payeCnaps: number;
+  payeSanitaire: number;
+  payeTotal: number;
+};
