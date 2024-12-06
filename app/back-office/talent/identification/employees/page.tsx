@@ -167,7 +167,8 @@ export default function EmployeesPage() {
                   <TableHead>Date d embauche</TableHead>
                   <TableHead>Poste</TableHead>
                   <TableHead>Département</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>liste paye</TableHead>
+                  <TableHead>paye</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -192,6 +193,17 @@ export default function EmployeesPage() {
                       </TableCell>
                       <TableCell>
                         {employe?.contrat?.poste.departement || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Link href={`/back-office/rh/paye/liste/${employe.id}`}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="hover:bg-muted"
+                          >
+                            liste paye
+                          </Button>
+                        </Link>
                       </TableCell>
                       <TableCell>
                         <Link href={`/back-office/rh/paye/${employe.id}`}>
