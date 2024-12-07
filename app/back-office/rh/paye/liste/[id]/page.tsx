@@ -11,12 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/page-header";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
-import { Link, Plus, Search } from "lucide-react";
 import axios from "axios";
-import { api_url, PaieType } from "@/types"; // Ensure the type is imported correctly
+import { api_url, PaieType } from "@/types";
 
 export default function AvancePage({
   params,
@@ -24,16 +22,19 @@ export default function AvancePage({
   params: Promise<{ id: number }>;
 }) {
   const [id, setId] = useState<number | null>(null);
-  const [paies, setPaies] = useState<PaieType[]>([]); // Explicitly type the state
+  const [paies, setPaies] = useState<PaieType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [paieSearch, setPaieSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchParams = async () => {
-      const resolvedParams = await params; // Await the params Promise
-      setId(resolvedParams.id);
+      try {
+        const resolvedParams = await params;
+        setId(resolvedParams.id);
+      } catch (error) {
+        console.error("Error resolving params:", error);
+      }
     };
 
     fetchParams();
@@ -42,46 +43,43 @@ export default function AvancePage({
   useEffect(() => {
     if (!id) return;
 
-    // Fetch avances from the API
     const fetchPaies = async () => {
       try {
-        const response = await axios.get(api_url + `paye/${id}`); // Adjust this URL to your actual API endpoint
-        setPaies(response.data as PaieType[]); // Explicitly cast the response data
-        setLoading(false);
+        const response = await axios.get(`${api_url}paye/${id}`);
+        setPaies(response.data as PaieType[]);
       } catch (error) {
-        console.error("Error fetching paies :", error);
+        console.error("Error fetching paies:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchPaies();
   }, [id]);
 
-  paies.sort((a, b) => {
-    if (b.annee !== a.annee) {
-      return b.annee - a.annee; // Sort by annee descending
-    }
-    return b.mois - a.mois; // If annee is equal, sort by mois descending
+  const sortedPaies = [...paies].sort((a, b) => {
+    if (b.annee !== a.annee) return b.annee - a.annee;
+    return b.mois - a.mois;
   });
 
-  // Pagination calculations
-  const totalPages = Math.ceil(paies.length / itemsPerPage);
-  const paginatedAvances = paies.slice(
+  const totalPages = Math.ceil(sortedPaies.length / itemsPerPage);
+  const paginatedPaies = sortedPaies.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Handle page change
   const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
     setCurrentPage(newPage);
   };
 
-  function getMonthName(monthNumber: number): string {
-    const date = new Date(2000, monthNumber - 1); // Months are 0-indexed
+  const getMonthName = (monthNumber: number): string => {
+    const date = new Date(2000, monthNumber - 1);
     const monthName = new Intl.DateTimeFormat("fr-FR", {
       month: "long",
     }).format(date);
-    return monthName.charAt(0).toUpperCase() + monthName.slice(1); // Capitalize the first letter
-  }
+    return monthName.charAt(0).toUpperCase() + monthName.slice(1);
+  };
 
   return (
     <div className="space-y-6 p-10">
@@ -92,14 +90,15 @@ export default function AvancePage({
       <Card className="bg-card text-card-foreground shadow">
         <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {/* Uncomment and adapt search logic if needed */}
             {/* <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Rechercher par nom ou prénom"
-                value={avanceSearch}
+                value={paieSearch}
                 onChange={(e) => {
-                  setAvanceSearch(e.target.value);
+                  setPaieSearch(e.target.value);
                   setCurrentPage(1);
                 }}
                 className="pl-8 bg-background border-input"
@@ -125,8 +124,8 @@ export default function AvancePage({
               {loading ? (
                 <SkeletonGeneralise rows={5} cols={7} />
               ) : (
-                paies.map((paie) => (
-                  <TableRow>
+                paginatedPaies.map((paie, index) => (
+                  <TableRow key={`${paie.annee}-${paie.mois}-${index}`}>
                     <TableCell>{getMonthName(paie.mois)}</TableCell>
                     <TableCell>{paie.annee}</TableCell>
                     <TableCell>{paie.heureNormale}</TableCell>
@@ -142,7 +141,6 @@ export default function AvancePage({
             </TableBody>
           </Table>
 
-          {/* Pagination controls */}
           <div className="flex justify-between items-center mt-4">
             <Button
               variant="outline"

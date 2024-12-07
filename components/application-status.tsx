@@ -52,7 +52,7 @@ const fetchCandidatDetail = async (
 
 const fetchTypenote = async (): Promise<TypeNote[]> => {
   try {
-    const response = await axios.get(`${api_url}type_note`);
+    const response = await axios.get(`${api_url}type-note`);
     return response.data as TypeNote[];
   } catch (error) {
     console.error("Erreur lors de la récupération:", error);
