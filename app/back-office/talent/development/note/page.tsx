@@ -64,7 +64,7 @@ export default function CandidateNoteForm() {
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        const response = await axios.get(`${api_url}candidat/non_refus`);
+        const response = await axios.get(`${api_url}candidat/non-refus`);
         setCandidates(response.data);
       } catch (error) {
         console.error("Error fetching candidates:", error);
@@ -73,7 +73,7 @@ export default function CandidateNoteForm() {
 
     const fetchTypeNotes = async () => {
       try {
-        const response = await axios.get(`${api_url}type_note`);
+        const response = await axios.get(`${api_url}type-note`);
         setTypeNotes(response.data);
       } catch (error) {
         console.error("Error fetching type notes:", error);

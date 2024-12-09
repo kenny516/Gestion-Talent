@@ -137,6 +137,7 @@ export default function EmployeesPage() {
                   <SelectItem key="0" value="0">
                     Toutes les catégories
                   </SelectItem>
+
                   {categPersonnel.map((categ: CategoriePersonnel) => (
                     <SelectItem key={categ.id} value={categ.id.toString()}>
                       {categ.nom}
