@@ -24,9 +24,11 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { PageHeader } from "@/components/page-header";
 import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { api_url } from "@/types";
 
 const payeSchema = z.object({
-  EmployeId: z
+    idEmploye: z
     .number()
     .positive("L'identifiant de l'employé doit être un entier positif."),
   datePaiement: z
@@ -53,19 +55,19 @@ export default function PayeForm({
   const form = useForm<z.infer<typeof payeSchema>>({
     resolver: zodResolver(payeSchema),
     defaultValues: {
-      EmployeId: Number(employeId), // Assurez-vous que c'est un nombre
+        idEmploye: Number(employeId), // Assurez-vous que c'est un nombre
       datePaiement: "",
     },
   });
 
   useEffect(() => {
-    form.setValue("EmployeId", Number(employeId)); // Conversion en nombre explicite
+    form.setValue("idEmploye", Number(employeId)); // Conversion en nombre explicite
   }, [employeId, form]);
 
   const onSubmit = async (values: z.infer<typeof payeSchema>) => {
     console.log("Données soumises :", values);
     try {
-      // Simulez un appel API
+        const response = axios.post(api_url + `employe/payer?idEmploye=${values.idEmploye}&datePaiement=${values.datePaiement}`);
       toast({
         variant: "default",
         title: "Succès",
@@ -90,7 +92,7 @@ export default function PayeForm({
             {/* Champ EmployeId caché */}
             <FormField
               control={form.control}
-              name="EmployeId"
+              name="idEmploye"
               render={({ field }) => (
                 <FormItem>
                   <input

@@ -1,4 +1,5 @@
 "use client";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -27,7 +28,7 @@ import {
 // Function to fetch employees from the API
 const fetchEmployees = async (): Promise<Employe[]> => {
   try {
-    const response = await fetch(api_url + "employe"); // Adjust this URL to your actual API endpoint
+    const response = await fetch(api_url + "employe");
     if (!response.ok) {
       throw new Error("Failed to fetch employees");
     }
@@ -35,13 +36,14 @@ const fetchEmployees = async (): Promise<Employe[]> => {
     return data;
   } catch (error) {
     console.error(error);
-    return []; // Return an empty array if there's an error
+    return [];
   }
 };
 
+// Function to fetch categories personnel from the API
 const fetchCategs = async (): Promise<CategoriePersonnel[]> => {
   try {
-    const response = await fetch(api_url + "employe/categories-personnel"); // Adjust this URL to your actual API endpoint
+    const response = await fetch(api_url + "employe/categories-personnel");
     if (!response.ok) {
       throw new Error("Failed to fetch categories personnel");
     }
@@ -49,12 +51,12 @@ const fetchCategs = async (): Promise<CategoriePersonnel[]> => {
     return data;
   } catch (error) {
     console.error(error);
-    return []; // Return an empty array if there's an error
+    return [];
   }
 };
 
 export default function EmployeesPage() {
-  // State to store employees
+  // States
   const [employees, setEmployees] = useState<Employe[]>([]);
   const [categPersonnel, setCategPersonnel] = useState<CategoriePersonnel[]>(
     []
@@ -67,16 +69,12 @@ export default function EmployeesPage() {
 
   // Apply combined search and category filtering
   const filteredEmployees = employees.filter((employe) => {
-    // Match search criteria
-    const matchesSearch = employe.contrat.poste.titre
+    const matchesSearch = employe?.contrat?.poste.titre
       .toLowerCase()
       .includes(posteSearch.toLowerCase());
-
-    // Match category filter or include all if idCateg is 0
     const matchesCategory =
       currentCategIndex === 0 ||
-      employe.contrat.poste.categoriePersonnel.id === currentCategIndex;
-
+      employe?.contrat?.poste.categoriePersonnel.id === currentCategIndex;
     return matchesSearch && matchesCategory;
   });
 
@@ -86,20 +84,19 @@ export default function EmployeesPage() {
     currentPage * itemsPerPage
   );
 
+  // Fetch data on mount
   useEffect(() => {
-    const getEmployees = async () => {
-      const data = await fetchEmployees();
-      setEmployees(data);
+    const getData = async () => {
+      setLoading(true);
+      const [employeesData, categsData] = await Promise.all([
+        fetchEmployees(),
+        fetchCategs(),
+      ]);
+      setEmployees(employeesData);
+      setCategPersonnel(categsData);
+      setLoading(false);
     };
-
-    const getCategs = async () => {
-      const data = await fetchCategs();
-      setCategPersonnel(data);
-    };
-
-    getEmployees();
-    getCategs();
-    setLoading(false);
+    getData();
   }, []);
 
   return (
@@ -111,6 +108,7 @@ export default function EmployeesPage() {
       <Card className="bg-card text-card-foreground shadow">
         <CardHeader className="border-b border-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {/* Search Input */}
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -124,6 +122,7 @@ export default function EmployeesPage() {
                 className="pl-8 bg-background border-input"
               />
             </div>
+            {/* Category Filter */}
             <div className="relative w-full sm:w-64">
               <Select
                 onValueChange={(value) => {
@@ -131,27 +130,28 @@ export default function EmployeesPage() {
                   setCurrentPage(1); // Reset to the first page
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Filtrer par catégorie">
                   <SelectValue placeholder="Filtrer par catégorie" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem key="0" value="0">
                     Toutes les catégories
                   </SelectItem>
-                  {categPersonnel.map((categ: any) => (
+                  {categPersonnel.map((categ: CategoriePersonnel) => (
                     <SelectItem key={categ.id} value={categ.id.toString()}>
                       {categ.nom}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {/* {currentCategIndex !== 0 && (
+              {currentCategIndex !== 0 && (
                 <div className="text-sm text-muted-foreground mt-1">
                   Filtre actuel :{" "}
-                  {categPersonnel.find((categ) => categ.id === currentCategIndex)?.nom ||
-                    "Inconnu"}
+                  {categPersonnel.find(
+                    (categ) => categ.id === currentCategIndex
+                  )?.nom || "Inconnu"}
                 </div>
-              )} */}
+              )}
             </div>
           </div>
         </CardHeader>
@@ -164,17 +164,22 @@ export default function EmployeesPage() {
                   <TableHead>Prénom</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Téléphone</TableHead>
-                  <TableHead>Date de candidature</TableHead>
+                  <TableHead>Date d embauche</TableHead>
                   <TableHead>Poste</TableHead>
                   <TableHead>Département</TableHead>
-                  <TableHead className="font-semibold text-muted-foreground">
-                    Actions
-                  </TableHead>
+                  <TableHead>liste paye</TableHead>
+                  <TableHead>paye</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <SkeletonGeneralise rows={5} cols={9} />
+                ) : paginatedCandidates.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center">
+                      Aucun employé trouvé pour ce filtre.
+                    </TableCell>
+                  </TableRow>
                 ) : (
                   paginatedCandidates.map((employe) => (
                     <TableRow key={employe.id}>
@@ -184,10 +189,21 @@ export default function EmployeesPage() {
                       <TableCell>{employe.telephone || "N/A"}</TableCell>
                       <TableCell>{employe.dateEmbauche || "N/A"}</TableCell>
                       <TableCell>
-                        {employe.contrat.poste.titre || "N/A"}
+                        {employe?.contrat?.poste.titre || "N/A"}
                       </TableCell>
                       <TableCell>
-                        {employe.contrat.poste.departement || "N/A"}
+                        {employe?.contrat?.poste.departement || "N/A"}
+                      </TableCell>
+                      <TableCell>
+                        <Link href={`/back-office/rh/paye/liste/${employe.id}`}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="hover:bg-muted"
+                          >
+                            liste paye
+                          </Button>
+                        </Link>
                       </TableCell>
                       <TableCell>
                         <Link href={`/back-office/rh/paye/${employe.id}`}>
@@ -206,6 +222,7 @@ export default function EmployeesPage() {
               </TableBody>
             </Table>
           </div>
+          {/* Pagination */}
           <div className="flex items-center justify-between p-4 border-t border-border">
             <Button
               variant="outline"
