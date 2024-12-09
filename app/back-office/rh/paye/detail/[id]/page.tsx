@@ -15,8 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { api_url, FichePaye } from "@/types";
+import { api_url, FichePaye, PaieType } from "@/types";
 import axios from "axios";
+import { Signature } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface PayrollEntry {
@@ -37,37 +38,65 @@ export default function Payslip({
 }: {
   params: Promise<{ id: number }>;
 }) {
-  const [payeId, setPayeId] = useState<number>(0);
-  const [dataPaye, setDataPaye] = useState<FichePaye>();
+  const [payeId, setPayeId] = useState<number | null>(null);
+  const [payeDetails, setPayeDetails] = useState<FichePaye | null>(null);
+  const [dataPaye, setDataPaye] = useState<PaieType | null>(null);
 
+  // Fetch and set `payeId` from `params`
   useEffect(() => {
-    const getEmpId = async () => {
+    const getPayeId = async () => {
       const paie = await params;
       setPayeId(paie.id);
     };
-    getEmpId();
-  }, []);
+    getPayeId();
+  }, [params]);
 
-  useEffect(()=>{
-    const fetch = async () => {
-        const response = axios.get(api_url+`paye/${payeId}`);
-        const data : FichePaye = (await response).data as FichePaye;
-        setDataPaye(data);
+  // Fetch data based on `payeId`
+  useEffect(() => {
+    if (!payeId) return; // Prevent fetch if payeId is null
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(api_url + `paye/${payeId}`);
+        const data: PaieType[] = response.data as PaieType[];
+        setDataPaye(data[0]);
+        console.log(data[0]);
+      } catch (error) {
+        console.error("Error fetching paye data:", error);
+      }
     };
-    fetch();
-  })
+    fetchData();
+  }, [payeId]);
+
+  // Fetch paye details based on `dataPaye`
+  useEffect(() => {
+    if (!dataPaye?.employe.id || !dataPaye.mois || !dataPaye.annee) return; // Prevent fetch if required data is missing
+    const fetchDetails = async () => {
+      try {
+        const response = await axios.get(
+          api_url +
+            `payedetails/${dataPaye.employe.id}?mois=${dataPaye.mois}&annee=${dataPaye.annee}`
+        );
+        const data: FichePaye = response.data as FichePaye;
+        setPayeDetails(data);
+      } catch (error) {
+        console.error("Error fetching paye details:", error);
+      }
+    };
+    fetchDetails();
+  }, [dataPaye]);
 
   const payrollData = {
-    employeeName: dataPaye?.nom,
-    matricule: dataPaye?.id,
+    employeeName: payeDetails?.nom,
+    matricule: payeDetails?.id,
     classification: "HC",
-    fonction: dataPaye?.posteTitre,
+    fonction: payeDetails?.titre,
     cnaps: "",
-    dateEmbauche: dataPaye?.dateEmbauche,
+    dateEmbauche: payeDetails?.dateEmbauche,
     anciennete: "12 an(s) 5 mois et 10 jour(s)",
-    salaireBase: dataPaye?.contratSalaire,
-    tauxJournalier: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 ,
-    tauxHoraire: dataPaye?.contratTauxHoraire,
+    salaireBase: payeDetails?.salaireBase,
+    tauxJournalier:
+      payeDetails?.tauxHoraire === undefined ? 0 : payeDetails?.tauxHoraire * 8,
+    tauxHoraire: payeDetails?.tauxHoraire,
     indice: 17660.0,
   };
 
@@ -75,48 +104,106 @@ export default function Payslip({
     {
       designation: "Err :502",
       nombre: "1 mois",
-      taux: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 ,
-      montant: dataPaye?.contratSalaire,
+      taux:
+        payeDetails?.tauxHoraire === undefined
+          ? 0
+          : payeDetails?.tauxHoraire * 8,
+      montant:
+        (payeDetails?.nbHeureAbs ?? 0) *
+        (payeDetails?.tauxHoraire === undefined
+          ? 0
+          : payeDetails?.tauxHoraire * 8),
     },
-    { designation: "Absences déductibles", taux:dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: dataPaye?.payeNbHeureAbs },
-    { designation: "Primes de rendement", montant: 0 },
-    { designation: "Primes d'ancienneté", montant: 0 },
     {
-      designation: "Heures supplémentaires total",
-      taux: dataPaye?.payeHeureSup,
-      montant: 0.0,
+      designation: "Absences déductibles",
+      taux:
+        payeDetails?.tauxHoraire === undefined
+          ? 0
+          : payeDetails?.tauxHoraire * 8,
+      montant: payeDetails?.tauxHoraire,
     },
-    { designation: "Primes diverses", montant: 0 },
-    { designation: "Rappels sur période antérieure", montant: 0 },
-    { designation: "Droits de congés", taux: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: 0.0 },
-    { designation: "Droits de préavis", taux: dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: 0.0 },
-    { designation: "Indemnités de licenciement", taux:dataPaye?.contratTauxHoraire === undefined ? 0 : dataPaye?.contratTauxHoraire * 8 , montant: 0.0 },
+    /*    { designation: "Primes de rendement", montant: 0 },
+    { designation: "Primes d'ancienneté", montant: 0 },*/
+    {
+      designation: "Heures supplémentaires 30%",
+      taux: payeDetails?.heureSup30,
+      montant: payeDetails?.heureSup30,
+    },
+    {
+      designation: "Heures supplémentaires 40%",
+      taux: payeDetails?.heureSup40,
+      montant: payeDetails?.heureSup40,
+    },
+    {
+      designation: "Heures supplémentaires 50%",
+      taux: payeDetails?.heureSup50,
+      montant: payeDetails?.heureSup50,
+    },
+    {
+      designation: "Heures supplémentaires 100%",
+      taux: payeDetails?.heureSup100,
+      montant: payeDetails?.heureSup100,
+    },
+    { designation: "Primes diverses", montant: payeDetails?.primeDiverse },
+    /*{ designation: "Rappels sur période antérieure", montant: 0 },*/
+    {
+      designation: "Droits de congés",
+      taux:
+        payeDetails?.tauxHoraire === undefined
+          ? 0
+          : payeDetails?.tauxHoraire * 8,
+      montant: payeDetails?.droitConge,
+    },
+    {
+      designation: "Droits de préavis",
+      taux:
+        payeDetails?.tauxHoraire === undefined
+          ? 0
+          : payeDetails?.tauxHoraire * 8,
+      montant: payeDetails?.droitPreavis,
+    },
+    {
+      designation: "Indemnités de licenciement",
+      taux:
+        payeDetails?.tauxHoraire === undefined
+          ? 0
+          : payeDetails?.tauxHoraire * 8,
+      montant: payeDetails?.indemnite,
+    },
   ];
 
   const irsaBrackets: IRSABracket[] = [
-    { label: "Tranche IRSA INF 350 0000", taux: 0, montant: 0 },
-    { label: "Tranche IRSA I DE 350 0001 à 400 000", taux: 5, montant: 2500.0 },
+    { label: "Tranche IRSA INF 350 0000", taux: 0, montant: payeDetails?.irsa },
+    {
+      label: "Tranche IRSA I DE 350 0001 à 400 000",
+      taux: 5,
+      montant: payeDetails?.irsa5,
+    },
     {
       label: "Tranche IRSA I DE 400 0001 à 500 000",
       taux: 10,
-      montant: 10000.0,
+      montant: payeDetails?.irsa10,
     },
     {
       label: "Tranche IRSA I DE 500 001 à 600 000",
       taux: 15,
-      montant: 15000.0,
+      montant: payeDetails?.irsa15,
     },
-    { label: "Tranche IRSA SUP 600 0000", taux: 20, montant: 684515.0 },
+    {
+      label: "Tranche IRSA SUP 600 0000",
+      taux: 20,
+      montant: payeDetails?.irsa20,
+    },
   ];
-
+  // a demander irsa
   const deductions = {
-    retenueCNaPS: dataPaye?.payeCnaps,
-    retenueSanitaire: dataPaye?.payeSanitaire,
-    totalIRSA: dataPaye?.payeIrsa,
-    totalRetenues: dataPaye?.payeTotal,
+    retenueCNaPS: payeDetails?.cnaps,
+    retenueSanitaire: payeDetails?.sanitaire,
+    totalIRSA: payeDetails?.irsa,
+    totalRetenues: (payeDetails?.salaireBase ?? 0) - (payeDetails?.total ?? 0),
     autresIndemnites: 0,
-    netAPayer: 3310560.0,
-    montantImposable: 4022575.0,
+    netAPayer: payeDetails?.total,
+    montantImposable: 0,
   };
 
   return (
@@ -259,7 +346,7 @@ export default function Payslip({
               <TableRow className="font-bold text-lg">
                 <TableCell colSpan={3}>Net à payer</TableCell>
                 <TableCell className="text-right">
-                  {deductions.netAPayer.toLocaleString()}
+                  {deductions?.netAPayer?.toLocaleString()}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -268,8 +355,6 @@ export default function Payslip({
 
         {/* Footer Information */}
         <div className="mt-6 space-y-2">
-          <p>Avantages en nature :</p>
-          <p>Déductions IRSA :</p>
           <p>
             Montant imposable : {deductions.montantImposable.toLocaleString()}
           </p>
@@ -280,10 +365,12 @@ export default function Payslip({
       <CardFooter className="flex justify-between p-6 border-t">
         <div className="text-center">
           <p className="font-medium mb-8">L employeur</p>
+          <Signature />
           <div className="h-[60px]"></div>
         </div>
         <div className="text-center">
           <p className="font-medium mb-8">L employé(e)</p>
+          <Signature />
           <div className="h-[60px]"></div>
         </div>
       </CardFooter>

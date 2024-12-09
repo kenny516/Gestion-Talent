@@ -286,6 +286,10 @@ export type paye = {
 };
 
 export type PaieType = {
+  id: number;
+  employe: {
+    id: number;
+  };
   mois: number;
   annee: number;
   heureNormale: number;
@@ -296,33 +300,42 @@ export type PaieType = {
 };
 
 export type FichePaye = {
-  id: number;
-  email: string;
-  nom: string;
-  prenom: string;
-  telephone: string;
-  dateEmbauche: string;
-  contratDateDebut: string;
-  contratDateFin: string;
-  contratSalaire: number;
-  contratTauxHoraire: number;
-  posteTitre: string;
-  posteDescription: string;
-  posteDepartement: string;
-  payeMois: number;
-  payeAnnee: number;
-  payeHeureNormale: number;
-  payeHeureSup: number;
-  payeMontantHeureSup: number;
-  payeSalaireBase: number;
-  payeAvance: number;
-  payeNbHeureAbs: number;
-  payeDroitConge: number;
-  payeDroitPreavis: number;
-  payeIndemnite: number;
-  payePrimeDiverse: number;
-  payeIrsa: number;
-  payeCnaps: number;
-  payeSanitaire: number;
-  payeTotal: number;
-};
+    id: number;
+    nom: string;
+    prenom: string;
+    email: string;
+    telephone: string;
+    dateEmbauche: string; // format "YYYY-MM-DD"
+    contratDateDebut: string; // format "YYYY-MM-DD"
+    contratDateFin: string; // format "YYYY-MM-DD"
+    salaire: number;
+    tauxHoraire: number;
+    titre: string;
+    posteDescription: string;
+    posteDepartement: string;
+    mois: number;
+    annee: number;
+    heureNormale: number;
+    heureSup: number;
+    heureSup30: number;
+    heureSup40: number;
+    heureSup50: number;
+    heureSup100: number;
+    montantHeureSup: number;
+    salaireBase: number;
+    avance: number;
+    nbHeureAbs: number;
+    droitConge: number;
+    droitPreavis: number;
+    indemnite: number;
+    primeDiverse: number;
+    irsa: number;
+    cnaps: number;
+    sanitaire: number;
+    total: number;
+    irsa5: number;
+    irsa10: number;
+    irsa15: number;
+    irsa20: number;
+  };
+  
