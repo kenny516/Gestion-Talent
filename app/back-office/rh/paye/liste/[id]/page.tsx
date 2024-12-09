@@ -15,6 +15,7 @@ import { PageHeader } from "@/components/page-header";
 import SkeletonGeneralise from "@/components/ui/skeleton-generalise-table";
 import axios from "axios";
 import { api_url, PaieType } from "@/types";
+import Link from "next/link";
 
 export default function AvancePage({
   params,
@@ -118,6 +119,7 @@ export default function AvancePage({
                 <TableHead>Avance</TableHead>
                 <TableHead>Salaire de base</TableHead>
                 <TableHead>Total</TableHead>
+                <TableHead>Details</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -135,6 +137,17 @@ export default function AvancePage({
                       {paie.salaireBase.toLocaleString("fr-FR")}
                     </TableCell>
                     <TableCell>{paie.total.toLocaleString("fr-FR")}</TableCell>
+                    <TableCell>
+                        <Link href={`/back-office/rh/paye/detail/${paie.id}`}>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="hover:bg-muted"
+                          >
+                            details
+                          </Button>
+                        </Link>
+                      </TableCell>
                   </TableRow>
                 ))
               )}
