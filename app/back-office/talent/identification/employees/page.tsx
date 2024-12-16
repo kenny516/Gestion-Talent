@@ -170,6 +170,7 @@ export default function EmployeesPage() {
                   <TableHead>Département</TableHead>
                   <TableHead>liste paye</TableHead>
                   <TableHead>paye</TableHead>
+                  <TableHead>vers details</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,6 +215,17 @@ export default function EmployeesPage() {
                             className="hover:bg-muted"
                           >
                             Paye
+                          </Button>
+                        </Link>
+                      </TableCell>
+											<TableCell>
+                        <Link href={`/back-office/talent/identification/employees/${employe.id}`}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="hover:bg-muted"
+                          >
+                            details
                           </Button>
                         </Link>
                       </TableCell>

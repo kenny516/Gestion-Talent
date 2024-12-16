@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import axios from "axios";
-import { api_url, Candidat, TypeNote, NoteCandidatForm } from "@/types";
+import { api_url, TypeNote, NoteCandidatForm, CandidatDisplay } from "@/types";
 import { PageHeader } from "@/components/page-header";
 import { z } from "zod";
 import {
@@ -46,7 +46,7 @@ const noteFormSchema = z.object({
 type NoteFormValues = z.infer<typeof noteFormSchema>;
 
 export default function CandidateNoteForm() {
-  const [candidates, setCandidates] = useState<Candidat[]>([]);
+  const [candidates, setCandidates] = useState<CandidatDisplay[]>([]);
   const [typeNotes, setTypeNotes] = useState<TypeNote[]>([]);
   const { toast } = useToast();
 
@@ -143,7 +143,7 @@ export default function CandidateNoteForm() {
                               key={candidate.id}
                               value={candidate.id.toString()}
                             >
-                              {candidate.nom} {candidate.prenom}
+                              {candidate.nom} {candidate.prenom} : {candidate.poste?.titre}
                             </SelectItem>
                           ))}
                         </SelectContent>

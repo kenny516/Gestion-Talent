@@ -152,7 +152,7 @@ const CandidatTable = ({
                       <TableCell>{candidate.telephone || "N/A"}</TableCell>
                       <TableCell>{candidate.datePostulation+""}</TableCell>
                       <TableCell>
-                        {candidate.poste?.departement || "N/A"}
+                        {candidate.poste?.titre || "N/A"}
                       </TableCell>
                       <TableCell>
                         <Badge
